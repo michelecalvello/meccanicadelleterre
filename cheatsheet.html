@@ -149,6 +149,18 @@ body,.card,.bore,.tab,.node{transition:background-color .25s,color .25s,border-c
 .credits p{margin:0;max-width:75ch}
 .credits a{color:var(--water);text-underline-offset:3px}
 .credits a:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+/* Fine partita: riepilogo */
+.endbar{display:flex;flex-wrap:wrap;gap:8px}
+.review{border-top:1px solid var(--line);padding-top:16px;min-width:0}
+.review h2{margin:0 0 12px;font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:20px}
+.review ol{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.rv{border-left:3px solid var(--line);padding:2px 0 2px 12px;min-width:0}
+.rv.d0{border-color:var(--water)} .rv.d1{margin-left:10px;border-color:var(--ochre)} .rv.d2{margin-left:20px}
+.rv-h{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;color:var(--muted)}
+.rv-q{margin:6px 0 4px;font-size:16.5px;line-height:1.55;overflow-wrap:anywhere}
+.rv-clue{color:var(--ochre)} .rv-hid{border-bottom:2px dotted var(--ochre)}
+.rv-a{margin:0} .rv-a .mono{color:var(--muted);margin-right:6px}
+.rv-n{margin:4px 0 0;font-size:14.5px;max-width:65ch}
 /* Sondaggi del livello */
 .strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .strip .lbl{color:var(--muted);margin-right:4px}
@@ -225,7 +237,7 @@ body,.card,.bore,.tab,.node{transition:background-color .25s,color .25s,border-c
           <li>Nella domanda principale ci sono <b>9 parole oscurate</b>, tante quanti i bonus che puoi guadagnare. Le parole <b>tratteggiate</b> sono indizi.</li>
           <li>Apri un indizio: è una domanda in chiaro, in cui solo le parole tratteggiate restano nascoste e portano allo strato più profondo.</li>
           <li>Ogni risposta esatta negli strati svela la sua parola nella domanda superiore e ti dà <b>1 bonus</b>. Ogni errore negli strati costa <b>2 punti</b>; "Rivela" ne costa <b>5</b> e non dà bonus.</li>
-          <li>Spendi un bonus toccando una parola oscurata della domanda principale: la scopri al costo di <b>2 punti</b>.</li>
+          <li>Spendi un bonus toccando una parola oscurata della domanda principale: la scopri al costo di <b>1 punto</b>.</li>
           <li>Sulla domanda principale hai <b>3 tentativi</b>: i primi due errori costano <b>5 punti</b> ciascuno, il terzo chiude il sondaggio con 0 punti.</li>
         </ol>
       </section>
@@ -314,8 +326,8 @@ function newId(){ return "u"+Date.now().toString(36)+Math.random().toString(36).
 
 /* ===== Motore di gioco ===== */
 const LETTERS=["A","B","C"];
-const RULES={start:100, subWrong:2, subReveal:5, bonusUse:2, mainWrong:5, mainTries:3};
-let flat={}, state={}, flashId=null;
+const RULES={start:100, subWrong:2, subReveal:5, bonusUse:1, mainWrong:5, mainTries:3};
+let flat={}, state={}, flashId=null, review=false;
 let sel={liv:1, id:null};
 function load(){ try{ state=JSON.parse(localStorage.getItem("cs-geo-v4"))||{}; }catch(e){ state={}; } try{ const s=JSON.parse(localStorage.getItem("cs-geo-sel")); if(s&&s.liv) sel=s; }catch(e){} }
 function save(){ try{ localStorage.setItem("cs-geo-v4", JSON.stringify(state)); localStorage.setItem("cs-geo-sel", JSON.stringify(sel)); }catch(e){} }
@@ -428,8 +440,9 @@ function renderCard(){
       const parts=[]; if(t.subWrong) parts.push(`errori negli strati −${t.subWrong*RULES.subWrong}`); if(t.subRev) parts.push(`risposte rivelate −${t.subRev*RULES.subReveal}`); if(t.used) parts.push(`bonus usati −${t.used*RULES.bonusUse}`); if(t.mw) parts.push(`tentativi errati −${Math.min(t.mw,RULES.mainTries-1)*RULES.mainWrong}`);
       const msg=t.failed?"Tre tentativi esauriti: sondaggio non superato, 0 punti. Usa “Ricomincia questo sondaggio” per riprovare.":parts.length?`Penalità: ${parts.join(" · ")}.`:"Nessuna penalità: punteggio pieno.";
       const nx=nextSond();
-      const next=nx?`<div><button class="btn" type="button" data-sond="${nx.id}" data-liv="${nx.livello}">Prossimo: ${nx.livello!==sd.livello?"Livello "+nx.livello+" · ":""}${esc(nx.titolo)}</button></div>`:"";
-      body=`<div class="result"><div class="grade">${t.pts}<small>/100</small></div><p class="mono" style="color:var(--muted)">${esc(sd.titolo)}</p><p>${msg}</p></div>`+body+next;
+      const next=nx?`<button class="btn" type="button" data-sond="${nx.id}" data-liv="${nx.livello}">Prossimo: ${nx.livello!==sd.livello?"Livello "+nx.livello+" · ":""}${esc(nx.titolo)}</button>`:"";
+      const revBtn=`<button class="btn ghost" type="button" id="revBtn" aria-expanded="${review}">${review?"Nascondi domande e risposte":"Vedi tutte le domande e risposte"}</button>`;
+      body=`<div class="result"><div class="grade">${t.pts}<small>/100</small></div><p class="mono" style="color:var(--muted)">${esc(sd.titolo)}</p><p>${msg}</p></div>`+body+`<div class="endbar">${revBtn}${next}</div>`+(review?renderReview():"");
     } else {
       body+=`<div><button class="btn" type="button" data-go="${f.parent}">Torna ${f.parent==="root"?"alla domanda principale":"all'indizio "+flat[f.parent].label}</button></div>`;
     }
@@ -437,7 +450,7 @@ function renderCard(){
   card.innerHTML=body;
   const form=document.getElementById("ansForm");
   if(form){
-    form.addEventListener("submit",e=>{ e.preventDefault(); const v=form.a.value, fb=document.getElementById("fb");
+    form.addEventListener("submit",e=>{ e.preventDefault(); const v=form.elements.a.value, fb=document.getElementById("fb");
       if(!v.trim()) return;
       if(matches(v,node)){ me.st="solved"; addLog(id==="root"?"Domanda principale risolta":`Indizio ${f.label} risolto`, id==="root"?"✓":"+1 bonus", false); save(); afterSolve(id); return; }
       me.wrong++;
@@ -446,24 +459,38 @@ function renderCard(){
         addLog(`Tentativo ${me.wrong} errato`,`−${RULES.mainWrong}`,true); save(); renderAll();
         const fb2=document.getElementById("fb"), left=RULES.mainTries-me.wrong; fb2.className="fb no"; fb2.textContent=`Non è questa: −${RULES.mainWrong} punti. ${left===1?"Ultimo tentativo.":"Restano "+left+" tentativi."}`;
         return; }
-      addLog(`Errore su indizio ${f.label}`,`−${RULES.subWrong}`,true); save(); fb.className="fb no"; fb.textContent=`Non è questa: −${RULES.subWrong} punti.`; form.a.select(); renderMap();
+      addLog(`Errore su indizio ${f.label}`,`−${RULES.subWrong}`,true); save(); fb.className="fb no"; fb.textContent=`Non è questa: −${RULES.subWrong} punti.`; form.elements.a.select(); renderMap();
     });
     const gu=document.getElementById("giveUp"); if(gu) gu.addEventListener("click",()=>{ me.st="revealed"; addLog(`Indizio ${f.label} rivelato`,`−${RULES.subReveal}`,true); save(); afterSolve(id); });
-    if(matchMedia("(pointer:fine)").matches) form.a.focus({preventScroll:true});
+    if(matchMedia("(pointer:fine)").matches) form.elements.a.focus({preventScroll:true});
   }
   flashId=null;
+}
+function plainQ(q){ return q.split(/(\{\{[^}]+\}\}|\[\[[^\]]+\]\])/).map(seg=>{
+  const m=seg.match(/^\{\{\w+\|([^}]+)\}\}$/); if(m) return `<b class="rv-clue">${esc(m[1])}</b>`;
+  const h=seg.match(/^\[\[([^\]]+)\]\]$/); if(h) return `<span class="rv-hid">${esc(h[1])}</span>`;
+  return esc(seg); }).join(""); }
+function renderReview(){
+  const items=Object.keys(flat).map(id=>{ const f=flat[id], n=f.node, s=ns(id);
+    const st = s.st==="solved"?["solved","risolta"] : s.st==="revealed"?["revealed","rivelata"] : s.st==="failed"?["revealed","non superata"] : [ "open", s.seen?"non risolta":"non aperta" ];
+    const lab = id==="root"?"Domanda principale":`Indizio ${f.label} · strato ${f.depth}`;
+    return `<li class="rv d${f.depth}"><div class="rv-h"><span class="mono">${lab}</span><span class="pill ${st[0]}">${st[1]}</span></div>
+      <p class="rv-q">${plainQ(n.q)}</p><p class="rv-a"><span class="mono">Risposta</span> <strong>${esc(n.canon)}</strong></p>
+      ${n.note?`<p class="rv-n">${esc(n.note)}</p>`:""}${n.fonte?`<p class="src">Fonte: ${esc(n.fonte)}</p>`:""}</li>`; }).join("");
+  return `<section class="review" aria-label="Tutte le domande e risposte"><h2>Tutte le domande e risposte</h2><ol>${items}</ol></section>`;
 }
 function afterSolve(id){ const f=flat[id]; if(f.parent){ flashId=id; S().cur=f.parent; } save(); renderAll(); }
 function go(id){ if(!flat[id]) return; const f=flat[id]; if(f.parent && !ns(f.parent).seen) return; S().cur=id; save(); renderAll(); document.getElementById("card").scrollIntoView({block:"nearest",behavior:"smooth"}); }
 function renderAll(){ cur(); build(); renderCard(); renderMap(); renderTabs(); renderStrip(); renderManager(); }
 
 document.addEventListener("click",e=>{
+  if(e.target.closest("#revBtn")){ review=!review; renderCard(); return; }
   const w=e.target.closest("[data-word]"); if(w){ spendBonus(+w.dataset.word); return; }
   const g=e.target.closest("[data-go]"); if(g){ go(g.dataset.go); return; }
-  const sb=e.target.closest("[data-sond]"); if(sb){ const s=catalog.find(x=>x.id===sb.dataset.sond); if(s){ sel={liv:s.livello,id:s.id}; save(); renderAll(); window.scrollTo({top:0,behavior:"smooth"}); } return; }
-  const t=e.target.closest("[data-liv]"); if(t){ sel={liv:+t.dataset.liv,id:null}; cur(); save(); renderAll(); }
+  const sb=e.target.closest("[data-sond]"); if(sb){ const s=catalog.find(x=>x.id===sb.dataset.sond); if(s){ sel={liv:s.livello,id:s.id}; review=false; save(); renderAll(); window.scrollTo({top:0,behavior:"smooth"}); } return; }
+  const t=e.target.closest("[data-liv]"); if(t){ sel={liv:+t.dataset.liv,id:null}; review=false; cur(); save(); renderAll(); }
 });
-document.getElementById("reset").addEventListener("click",()=>{ if(sel.id){ delete state[sel.id]; save(); renderAll(); } });
+document.getElementById("reset").addEventListener("click",()=>{ if(sel.id){ review=false; delete state[sel.id]; save(); renderAll(); } });
 
 /* ===== Caricamento dei fogli di calcolo ===== */
 let art=null, canPublish=false, pending=[], confirmId=null;

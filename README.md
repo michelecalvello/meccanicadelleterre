@@ -20,7 +20,8 @@ Pagina del gioco: https://michelecalvello.github.io/meccanicadelleterre/cheatshe
 - La domanda principale ha 3 parole-indizio e 9 parole oscurate.
 - Ogni indizio apre una domanda di strato 1, con 2 indizi che portano a domande di strato 2 (10 domande in tutto).
 - Negli strati 1 e 2: risposta errata −2 punti; "Rivela" −5 punti e nessun bonus; risposta esatta +1 bonus.
-- Un bonus svela una parola oscurata della domanda principale, al costo di 2 punti.
+- Un bonus svela una parola oscurata della domanda principale, al costo di 1 punto.
+- A fine partita si possono rivedere tutte le 10 domande con le risposte, le note e le fonti.
 - Domanda principale: 3 tentativi; i primi due errori costano 5 punti ciascuno, il terzo chiude il sondaggio con 0 punti.
 
 ## Scaricare o aggiungere un sondaggio
