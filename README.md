@@ -23,15 +23,19 @@ Pagina del gioco: https://michelecalvello.github.io/meccanicadelleterre/cheatshe
 - Un bonus svela una parola oscurata della domanda principale, al costo di 2 punti.
 - Domanda principale: 3 tentativi; i primi due errori costano 5 punti ciascuno, il terzo chiude il sondaggio con 0 punti.
 
-## Aggiungere un sondaggio
+## Scaricare o aggiungere un sondaggio
 
-1. Compila una copia di `fogli/modello-sondaggio.xlsx` (un file = un sondaggio da 10 righe; istruzioni nel foglio "Istruzioni").
-   Nella colonna `domanda` scrivi gli indizi come `{{parola}}` e, solo nella riga P, le 9 parole oscurate come `[[parola]]`.
-2. Apri `cheatsheet.html` (la pagina pubblicata o il file in locale), apri **Aggiungi sondaggi** e carica il file: la pagina segnala eventuali errori riga per riga.
-3. Premi **Aggiungi a questo file**, poi **Scarica pagina aggiornata**: ottieni un nuovo `cheatsheet.html` con tutti i sondaggi.
-4. Sostituisci `cheatsheet.html` nel repository con il file scaricato (e, se vuoi, aggiungi il foglio in `fogli/`).
+Nella pagina del gioco, il pannello **Scarica o aggiungi sondaggi** permette di:
 
-I sondaggi aggiunti senza ricaricare il file nel repository restano visibili solo nel browser in cui sono stati caricati.
+- scaricare il modello vuoto e il foglio di calcolo (.xlsx) di ogni sondaggio presente, per correggerlo o usarlo come esempio;
+- caricare un foglio compilato: la pagina controlla le regole, segnala eventuali errori riga per riga e, se il foglio è valido, aggiunge il sondaggio **solo nel browser** in cui è stato caricato.
+
+Per rendere un sondaggio visibile a tutti va aggiunto a `cheatsheet.html` nel repository, insieme al foglio in `fogli/`.
+
+### Come compilare il foglio
+
+Compila una copia di `fogli/modello-sondaggio.xlsx` (un file = un sondaggio da 10 righe; istruzioni nel foglio "Istruzioni").
+Nella colonna `domanda` scrivi gli indizi come `{{parola}}` e, solo nella riga P, le 9 parole oscurate come `[[parola]]`.
 
 ## Pubblicazione su GitHub Pages
 
