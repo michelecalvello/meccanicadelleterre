@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cheat Sheet Geotecnico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,500;125,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+img{max-width:100%}
+
+/* Layout: scheda di prova a sinistra, "sondaggio" stratigrafico come mappa degli indizi a destra; su telefono in colonna. */
+:root{
+  --bg:#EDEEE8;        /* limo chiaro */
+  --paper:#F8F8F4;
+  --ink:#1D201C;
+  --muted:#5D635A;
+  --line:#C9CCC1;
+  --water:#0F6670;     /* falda: accento principale */
+  --water-soft:#D5E7E6;
+  --ochre:#A86A12;     /* indizi */
+  --ochre-soft:#F1E3C8;
+  --redact:#3A3A33;
+  --good:#2F7A3B;
+  --bad:#B23A2E;
+  --sand:#D9C79F; --silt:#B9B7A2; --clay:#8F8574;
+  --f-display:"Archivo", "Arial Narrow", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15160F; --paper:#1F201A; --ink:#E9E8DF; --muted:#A3A596; --line:#3A3C33;
+  --water:#5FC1C6; --water-soft:#163A3C; --ochre:#E2A64C; --ochre-soft:#3A2D16;
+  --redact:#7D7C6F; --good:#7CCB86; --bad:#F08A7C;
+  --sand:#6B5D3E; --silt:#4F4E42; --clay:#3D372D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15160F; --paper:#1F201A; --ink:#E9E8DF; --muted:#A3A596; --line:#3A3C33;
+  --water:#5FC1C6; --water-soft:#163A3C; --ochre:#E2A64C; --ochre-soft:#3A2D16;
+  --redact:#7D7C6F; --good:#7CCB86; --bad:#F08A7C;
+  --sand:#6B5D3E; --silt:#4F4E42; --clay:#3D372D; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px;display:grid;gap:20px}
+header.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px}
+.brand h1{font-family:var(--f-display);font-weight:800;font-stretch:125%;font-size:clamp(28px,5vw,44px);line-height:1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.brand h1 span{color:var(--water)}
+.brand p{margin:6px 0 0;color:var(--muted);font-size:15px}
+.mono{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 12px;border-radius:6px;display:flex;gap:10px;align-items:center;text-align:left}
+.tab small{display:block;color:var(--muted);font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.tab b{font-weight:700}
+.tab[aria-selected="true"]{border-color:var(--water);box-shadow:inset 0 -3px 0 var(--water)}
+.tab .badge{font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:15px;color:var(--water);min-width:2ch}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Scheda domanda */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px clamp(16px,3vw,28px);display:grid;gap:16px;min-width:0}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:var(--muted)}
+.crumbs button{font:inherit;background:none;border:0;color:var(--water);cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:3px}
+.eyebrow{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.pill{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid currentColor}
+.pill.open{color:var(--muted)} .pill.solved{color:var(--good)} .pill.revealed{color:var(--bad)}
+.q{font-size:clamp(19px,2.4vw,23px);line-height:1.75;margin:0;overflow-wrap:anywhere}
+.r{display:inline-block;height:.78em;vertical-align:-.04em;background:var(--redact);border-radius:2px;opacity:.85;
+   background-image:radial-gradient(circle at 30% 40%,rgba(255,255,255,.18) 0 1px,transparent 1.5px),radial-gradient(circle at 70% 70%,rgba(255,255,255,.14) 0 1px,transparent 1.5px);background-size:7px 7px,9px 9px}
+.clue{font:inherit;font-weight:700;cursor:pointer;border:2px dashed var(--ochre);background:var(--ochre-soft);color:var(--ochre);border-radius:6px;padding:0 .4em;line-height:1.35;display:inline-flex;align-items:center;gap:.3em;vertical-align:baseline}
+.clue .k{font-family:var(--f-mono);font-size:.62em;letter-spacing:.04em}
+.clue:hover{border-style:solid}
+.clue.solved{border:0;border-bottom:3px solid var(--water);background:var(--water-soft);color:var(--ink);border-radius:3px}
+.clue.revealed{border:0;border-bottom:3px solid var(--bad);background:transparent;color:var(--ink);border-radius:0}
+.clue.flash{animation:flash 1.2s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 6px var(--water-soft)}100%{box-shadow:0 0 0 0 transparent}}
+.full{color:var(--ink)}
+form.ans{display:flex;flex-wrap:wrap;gap:8px}
+form.ans input{flex:1 1 220px;min-width:0;font:inherit;font-size:17px;padding:10px 12px;border:1.5px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+form.ans input:focus{outline:2px solid var(--water);outline-offset:1px;border-color:var(--water)}
+.btn{font:inherit;font-weight:700;cursor:pointer;padding:10px 16px;border-radius:6px;border:1.5px solid var(--water);background:var(--water);color:var(--paper)}
+.btn.ghost{background:transparent;color:var(--muted);border-color:var(--line);font-weight:400}
+.btn:focus-visible,.clue:focus-visible,.tab:focus-visible,.node:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+.fb{min-height:1.5em;margin:0;font-weight:700}
+.fb.ok{color:var(--good)} .fb.no{color:var(--bad)}
+.answer{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px;padding:12px 14px;border-radius:8px;background:var(--water-soft)}
+.answer strong{font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:20px}
+.note{border-top:1px solid var(--line);padding-top:14px;color:var(--ink);max-width:65ch}
+.note .mono{color:var(--muted);display:block;margin-bottom:4px}
+.note p{margin:0}
+.hint{color:var(--muted);font-size:14px;margin:0;max-width:65ch}
+
+/* Esito */
+.result{display:grid;grid-template-columns:auto 1fr;gap:6px 20px;align-items:center;border:2px solid var(--water);border-radius:10px;padding:16px 20px}
+.result .grade{font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:64px;line-height:1;color:var(--water);grid-row:span 2}
+.result p{margin:0}
+
+/* Sondaggio */
+aside{display:grid;gap:16px;min-width:0}
+.bore{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px}
+.bore h2,.howto h2{margin:0;font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:18px}
+.stratum{position:relative;border-radius:4px;padding:26px 8px 10px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.stratum .lab{position:absolute;top:6px;left:8px;color:var(--ink);opacity:.75;font-size:10.5px}
+.s0{background:repeating-linear-gradient(0deg,transparent 0 14px,color-mix(in srgb,var(--line) 70%,transparent) 14px 15px),var(--bg)}
+.s1{background:radial-gradient(circle,color-mix(in srgb,var(--ink) 18%,transparent) 1px,transparent 1.6px) 0 0/8px 8px,var(--sand)}
+.s2{background:repeating-linear-gradient(135deg,transparent 0 6px,color-mix(in srgb,var(--ink) 14%,transparent) 6px 7px),var(--clay)}
+.water{height:0;border-top:2px dashed var(--water);position:relative;margin:2px 0}
+.water span{position:absolute;right:0;top:-18px;color:var(--water);font-size:10.5px}
+.node{font:inherit;cursor:pointer;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:6px;padding:6px 4px;font-family:var(--f-mono);font-size:12px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.node[data-span="6"]{grid-column:span 6} .node[data-span="2"]{grid-column:span 2} .node[data-span="1"]{grid-column:span 1}
+.node.solved{background:var(--water);color:var(--paper);border-color:var(--water)}
+.node.revealed,.node.failed{background:var(--paper);color:var(--bad);border-color:var(--bad)}
+.node.cur{outline:3px solid var(--ochre);outline-offset:1px}
+.node:disabled{cursor:default;opacity:.45;border-style:dashed}
+.meter{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:10px}
+.meter .g{font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:30px;color:var(--water)}
+.meter span{font-variant-numeric:tabular-nums}
+.howto{background:transparent;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14.5px;color:var(--muted)}
+.howto ol{margin:8px 0 0;padding-left:20px;display:grid;gap:4px}
+.howto b{color:var(--ink)}
+.reset{justify-self:start}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:-6px}
+.themebtn{font:inherit;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 10px;border:1px solid var(--line);border-radius:99px;background:var(--paper);color:var(--ink);flex-shrink:0}
+.themebtn:hover{border-color:var(--water)}
+.themebtn:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+.themebtn .ic{display:inline-flex;color:var(--ochre)}
+.themebtn svg{width:18px;height:18px}
+body,.card,.bore,.tab,.node{transition:background-color .25s,color .25s,border-color .25s}
+@media (prefers-reduced-motion:reduce){body,.card,.bore,.tab,.node{transition:none}}
+.rb{border:0;padding:0;cursor:pointer;outline:2px solid var(--ochre);outline-offset:1px;font:inherit;color:inherit}
+.rb:hover{background-color:var(--ochre)}
+.bw{border-bottom:2px dotted var(--ochre);color:var(--ink);font-weight:700}
+.meter .g small,.result .grade small{font-size:.4em;color:var(--muted);font-weight:500;margin-left:2px}
+.bonusbar,.attempts{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.tokens{display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums;font-weight:700}
+.tok{display:inline-block;width:12px;height:12px;border-radius:50%}
+.tok.b{background:var(--ochre)} .tok.a{background:var(--water)} .tok.x{border:1.5px solid var(--bad)}
+.tokens .none{font-weight:400;color:var(--muted);font-size:14px}
+.log{list-style:none;margin:0;padding:8px 0 0;border-top:1px solid var(--line);display:grid;gap:3px;font-size:13.5px}
+.log:empty{display:none}
+.log li{display:flex;justify-content:space-between;gap:8px}
+.log b.neg{color:var(--bad)} .log b.pos{color:var(--ochre)}
+@media (prefers-reduced-motion:reduce){.clue.flash{animation:none}}
+/* Mappa: piano campagna sotto la domanda principale */
+.stratum.s0{padding:8px;border-bottom:2px solid var(--ink);border-radius:4px 4px 0 0;margin-bottom:6px}
+.stratum .lab.gl{top:auto;bottom:6px}
+/* Sondaggi del livello */
+.strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.strip .lbl{color:var(--muted);margin-right:4px}
+.sond{font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line);border-radius:99px;background:var(--paper);color:var(--ink);font-size:14px;max-width:100%}
+.sond .n{font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--muted)}
+.sond .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.sond .p{font-family:var(--f-display);font-stretch:125%;font-weight:800;color:var(--water)}
+.sond .tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ochre);border:1px solid var(--ochre);border-radius:99px;padding:1px 6px}
+.sond[aria-pressed="true"]{border-color:var(--water);background:var(--water-soft)}
+.sond:focus-visible,.upload summary:focus-visible,.mini:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
+.empty{color:var(--muted);margin:0}
+.src{margin:8px 0 0;color:var(--muted);font-size:14px}
+/* Area caricamento */
+.upload{border:1px dashed var(--ochre);border-radius:10px;padding:12px 16px;font-size:14.5px}
+.upload summary{cursor:pointer;font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:17px;list-style-position:outside}
+.upload[open] summary{margin-bottom:10px}
+.upload p{margin:0 0 10px;color:var(--muted)}
+.upload code,.card code{font-family:var(--f-mono);font-size:12.5px;background:var(--ochre-soft);color:var(--ink);padding:0 4px;border-radius:3px}
+.filebox{display:block;border:1.5px dashed var(--line);border-radius:8px;padding:12px;text-align:center;cursor:pointer;color:var(--ink);background:var(--bg)}
+.filebox:hover,.filebox.drag{border-color:var(--water)}
+.filebox input{display:block;margin:8px auto 0;max-width:100%;font:inherit;font-size:13px}
+.rep{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.rep>li{border-left:3px solid var(--good);padding:2px 0 2px 10px}
+.rep>li.err{border-color:var(--bad)}
+.rep b{display:block}
+.rep ul{margin:4px 0 0;padding-left:18px;color:var(--bad)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.actions .btn{font-size:14px;padding:8px 12px}
+.status{margin:8px 0 0;font-weight:700;min-height:1.4em}
+.status.ok{color:var(--good)} .status.no{color:var(--bad)}
+.mgr{list-style:none;margin:12px 0 0;padding:10px 0 0;border-top:1px solid var(--line);display:grid;gap:6px}
+.mgr:empty{display:none}
+.mgr li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;justify-content:space-between}
+.mgr .who{min-width:0}
+.mgr .who small{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-right:6px}
+.mini{font:inherit;font-size:13px;cursor:pointer;padding:3px 9px;border-radius:5px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.mini.warn{border-color:var(--bad);color:var(--bad)}
+.mini.go{border-color:var(--water);color:var(--water)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="topbar">
+    <span class="mono" style="color:var(--muted)">Meccanica delle terre · gioco a indizi</span>
+    <button type="button" class="themebtn" id="themeBtn" aria-pressed="false"><span class="ic" aria-hidden="true"></span><span class="tl">Scuro</span></button>
+  </div>
+  <header class="top">
+    <div class="brand">
+      <h1>Cheat Sheet <span>Geotecnico</span></h1>
+      <p>Parti da 100 punti. Rispondi alla domanda principale, &ldquo;scavando&rdquo; negli indizi per guadagnare bonus e svelarne le parole oscurate.</p>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs" aria-label="Livelli"></nav>
+  </header>
+  <nav class="strip" id="strip" aria-label="Sondaggi del livello"></nav>
+
+  <div class="grid">
+    <main class="card" id="card" aria-live="polite"></main>
+    <aside>
+      <section class="bore" aria-label="Mappa degli indizi" id="bore">
+        <div class="eyebrow"><h2>Sondaggio <span id="sNum">S1</span></h2><span class="mono" style="color:var(--muted)">1 + 3 + 6 domande</span></div>
+        <div id="map"></div>
+        <div class="meter"><div><div class="mono" style="color:var(--muted)">Punteggio</div><span id="cheatTxt"></span></div><div class="g"><span id="liveGrade">100</span><small>/100</small></div></div>
+        <div class="bonusbar"><span class="mono" style="color:var(--muted)">Bonus disponibili</span><span id="bonusTokens" class="tokens"></span></div>
+        <div class="attempts"><span class="mono" style="color:var(--muted)">Tentativi sulla principale</span><span id="attTokens" class="tokens"></span></div>
+        <ol class="log" id="log" aria-label="Registro punti"></ol>
+        <button class="btn ghost reset" id="reset" type="button">Ricomincia questo sondaggio</button>
+      </section>
+      <section class="howto">
+        <h2>Come si gioca</h2>
+        <ol>
+          <li>Nella domanda principale ci sono <b>9 parole oscurate</b>, tante quanti i bonus che puoi guadagnare. Le parole <b>tratteggiate</b> sono indizi.</li>
+          <li>Apri un indizio: è una domanda in chiaro, in cui solo le parole tratteggiate restano nascoste e portano allo strato più profondo.</li>
+          <li>Ogni risposta esatta negli strati svela la sua parola nella domanda superiore e ti dà <b>1 bonus</b>. Ogni errore negli strati costa <b>2 punti</b>; "Rivela" ne costa <b>5</b> e non dà bonus.</li>
+          <li>Spendi un bonus toccando una parola oscurata della domanda principale: la scopri al costo di <b>2 punti</b>.</li>
+          <li>Sulla domanda principale hai <b>3 tentativi</b>: i primi due errori costano <b>5 punti</b> ciascuno, il terzo chiude il sondaggio con 0 punti.</li>
+        </ol>
+      </section>
+      <details class="upload" id="upload">
+        <summary>Aggiungi sondaggi</summary>
+        <p>Carica uno o più fogli di calcolo compilati con il modello (un file per sondaggio, 10 righe). Ogni sondaggio va nel livello indicato nella colonna <code>livello</code>.</p>
+        <p id="modeTxt"></p>
+        <label class="filebox" id="filebox">Scegli o trascina qui i file .xlsx o .csv
+          <input type="file" id="fileIn" accept=".xlsx,.xls,.csv" multiple>
+        </label>
+        <ul class="rep" id="rep"></ul>
+        <div class="actions" id="actions"></div>
+        <p class="status" id="status" role="status"></p>
+        <ul class="mgr" id="mgr" aria-label="Sondaggi caricati"></ul>
+      </details>
+    </aside>
+  </div>
+</div>
+
+<script type="application/json" id="sondaggi-data">{"formato":1,"sondaggi":[{"id":"s1","rows":[{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"P","domanda":"Secondo il [[principio]] di {{Terzaghi}}, come si chiama la [[tensione]] [[pari]] alla [[tensione]] [[totale]] [[meno]] la pressione {{interstiziale}}, che [[governa]] la {{resistenza}} e la [[deformabilità]] dei terreni [[saturi]]?","risposta_canonica":"tensione efficace","risposte_alternative":"tensioni efficaci; sforzo efficace; sforzi efficaci; efficace; tensione effettiva; pressione efficace; sigma'; σ'","nota":"σ' = σ − u. Ogni effetto misurabile di una variazione di tensione nel terreno saturo (compressione, distorsione, variazione di resistenza) dipende solo dalla variazione di σ'. Per questo la stessa sabbia è più o meno resistente a seconda della posizione della falda.","fonte":"Terzaghi K. (1943), Theoretical Soil Mechanics, Wiley"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"A","domanda":"Quale ingegnere, autore di Erdbaumechanik nel 1925, è considerato il padre della {{geotecnica}} moderna e ha formulato la teoria della {{consolidazione}} monodimensionale?","risposta_canonica":"Terzaghi","risposte_alternative":"karl terzaghi; karl von terzaghi; k terzaghi","nota":"Karl Terzaghi (Praga 1883 – Winchester 1963). Erdbaumechanik auf bodenphysikalischer Grundlage (Vienna, 1925) segna la nascita della meccanica delle terre come disciplina autonoma.","fonte":"Terzaghi K. (1925), Erdbaumechanik auf bodenphysikalischer Grundlage, Deuticke, Vienna"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"A1","domanda":"Quale disciplina dell'ingegneria civile studia terreni e rocce in rapporto a fondazioni, opere di sostegno e stabilità dei pendii?","risposta_canonica":"geotecnica","risposte_alternative":"ingegneria geotecnica; geotecnia","nota":"Comprende la meccanica delle terre e delle rocce e le loro applicazioni progettuali (NTC 2018, cap. 6).","fonte":"NTC 2018 (D.M. 17/01/2018), cap. 6"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"A2","domanda":"Come si chiama il processo, lento nelle argille, di riduzione di volume di un terreno saturo per graduale espulsione dell'acqua dai pori sotto un carico costante?","risposta_canonica":"consolidazione","risposte_alternative":"consolidamento; consolidazione primaria","nota":"Nella teoria monodimensionale ∂u/∂t = cv·∂²u/∂z²: la sovrappressione u si dissipa nel tempo e il carico passa dall'acqua allo scheletro solido.","fonte":"Terzaghi K. (1943), Theoretical Soil Mechanics, Wiley"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"B","domanda":"Come si chiama la pressione u dell'acqua che riempie i {{vuoti}} di un terreno, misurata in sito con il {{piezometro}}?","risposta_canonica":"interstiziale","risposte_alternative":"pressione interstiziale; neutra; pressione neutra; pressione dei pori; pressione idrostatica","nota":"Detta anche pressione neutra: agisce allo stesso modo in tutte le direzioni e non trasmette sforzi di taglio. In condizioni idrostatiche u = γw·zw sotto la superficie di falda.","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"B1","domanda":"Il rapporto e = Vv/Vs tra il volume non occupato dai grani e il volume dei solidi si chiama indice dei …?","risposta_canonica":"vuoti","risposte_alternative":"vuoto","nota":"Legato alla porosità da n = e/(1+e). Nelle argille tenere e può superare 1; nelle sabbie dense scende sotto 0,5.","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"B2","domanda":"Quale strumento, per esempio del tipo Casagrande a tubo aperto, si installa in un foro di sondaggio per misurare il livello o la pressione dell'acqua in un punto del sottosuolo?","risposta_canonica":"piezometro","risposte_alternative":"piezometri; cella piezometrica; piezometro casagrande","nota":"I piezometri a tubo aperto hanno tempi di risposta lunghi nei terreni poco permeabili; in quei casi si preferiscono celle elettriche o pneumatiche.","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"C","domanda":"Quale proprietà del terreno, descritta dal criterio di {{Mohr-Coulomb}}, ne esprime la capacità di sopportare sforzi di {{taglio}} prima della rottura?","risposta_canonica":"resistenza","risposte_alternative":"resistenza al taglio; resistenza a taglio; resistenza tangenziale","nota":"In termini efficaci τf = c' + σ'·tan φ'. Senza σ' nell'equazione la resistenza di un terreno saturo non si può prevedere: ecco il legame con la domanda principale.","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"C1","domanda":"Quale criterio di rottura, che unisce i nomi di un ingegnere tedesco dell'Ottocento e di un fisico francese del Settecento, si scrive τf = c' + σ'·tan φ'?","risposta_canonica":"Mohr-Coulomb","risposte_alternative":"mohr coulomb; coulomb; mohr; coulomb-mohr","nota":"Coulomb (1776) propose la legge di attrito-coesione; Mohr (1900) la rappresentazione con i cerchi di tensione e l'inviluppo di rottura.","fonte":"Coulomb C.A. (1776); Mohr O. (1900)"},{"livello":"1 - Base","sondaggio":"Tensioni efficaci","codice":"C2","domanda":"Nella prova eseguita con la scatola di Casagrande il provino si porta a rottura lungo un piano orizzontale imposto. Come si chiama la prova? Prova di … diretto.","risposta_canonica":"taglio","risposte_alternative":"taglio diretto","nota":"Prova semplice ed economica, ma il piano di rottura è imposto e le pressioni interstiziali non si misurano.","fonte":"ASTM D3080 (prova di taglio diretto)"}]},{"id":"s2","rows":[{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"P","domanda":"Quale [[apparecchio]] di [[laboratorio]], [[ideato]] da [[Terzaghi]], [[misura]] i {{cedimenti}} di un {{provino}} a [[deformazione]] [[laterale]] [[nulla]] per ricavare l'indice di {{compressione}} [[Cc]]?","risposta_canonica":"edometro","risposte_alternative":"edometrica; prova edometrica; edometrico; consolidometro; oedometer","nota":"Il provino è chiuso in un anello rigido tra due pietre porose. Si applicano gradini di carico (di solito raddoppiando la tensione) e si leggono gli abbassamenti nel tempo. Si ottengono la curva e–log σ'v, Cc, Cs, la pressione di preconsolidazione σ'p, mv e cv.","fonte":"ASTM D2435 (prova edometrica); Lancellotta R., Geotecnica, Zanichelli"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"A","domanda":"Come si chiamano gli abbassamenti di una {{fondazione}} dovuti alla deformazione del terreno, distinti in immediati, di consolidazione primaria e {{secondari}}?","risposta_canonica":"cedimenti","risposte_alternative":"cedimento; assestamenti; cedimenti di fondazione","nota":"Il cedimento di consolidazione di uno strato normalconsolidato si stima con w = H·Cc/(1+e0)·log(σ'f/σ'0).","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"A1","domanda":"Quale elemento strutturale trasferisce al terreno i carichi di un'opera e può essere superficiale (plinti, travi rovesce, platee) o profondo (pali)?","risposta_canonica":"fondazione","risposte_alternative":"fondazioni; opera di fondazione","nota":"La verifica in esercizio di una fondazione riguarda proprio i cedimenti, assoluti e differenziali.","fonte":"NTC 2018 (D.M. 17/01/2018), § 6.4"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"A2","domanda":"Come si chiama, con un aggettivo, la compressione per viscosità (creep) dello scheletro solido che prosegue anche dopo la dissipazione delle sovrappressioni interstiziali? Compressione …","risposta_canonica":"secondari","risposte_alternative":"secondaria; secondario; secondarie; compressione secondaria","nota":"Si misura con il coefficiente Cα = Δe/Δlog t. È rilevante soprattutto nei terreni organici e nelle torbe.","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"B","domanda":"Come si chiama la porzione di terreno, ricavata da un campione {{indisturbato}} e sagomata a dimensioni prefissate, sottoposta a una prova di {{laboratorio}}?","risposta_canonica":"provino","risposte_alternative":"provini; campione di prova","nota":"Nell'edometro il provino è tipicamente un disco di 50–70 mm di diametro e circa 20 mm di altezza: lo spessore ridotto accorcia i tempi di consolidazione.","fonte":"ASTM D2435 (prova edometrica)"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"B1","domanda":"Come si definisce un campione prelevato con un campionatore a pareti sottili (per esempio Shelby o Osterberg) per conservarne struttura, densità e contenuto d'acqua naturali?","risposta_canonica":"indisturbato","risposte_alternative":"indisturbata; indisturbati; poco disturbato","nota":"Solo su campioni indisturbati (classe di qualità Q5) ha senso misurare compressibilità e resistenza.","fonte":"AGI (1977), Raccomandazioni sulla programmazione ed esecuzione delle indagini geotecniche"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"B2","domanda":"La caratterizzazione geotecnica si basa su prove in sito e su prove di …, eseguite sui campioni prelevati dai sondaggi.","risposta_canonica":"laboratorio","risposte_alternative":"","nota":"Le prove in sito (CPT, SPT, DMT) danno profili continui; quelle di laboratorio parametri misurati in condizioni controllate.","fonte":"AGI (1977), Raccomandazioni sulla programmazione ed esecuzione delle indagini geotecniche"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"C","domanda":"L'indice Cc, pari alla {{pendenza}} del tratto {{vergine}} della curva e–log σ'v, si chiama indice di …?","risposta_canonica":"compressione","risposte_alternative":"compressibilita; compressibilità","nota":"Per le argille vale indicativamente 0,1–0,8. Una stima classica è Cc ≈ 0,009·(wL − 10) (Skempton, Terzaghi e Peck).","fonte":"Terzaghi K., Peck R.B. (1967), Soil Mechanics in Engineering Practice, Wiley"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"C1","domanda":"In un diagramma cartesiano, come si chiama il rapporto tra la variazione verticale e quella orizzontale lungo una retta?","risposta_canonica":"pendenza","risposte_alternative":"inclinazione; coefficiente angolare","nota":"Cc = −Δe/Δlog σ'v. Sul tratto di scarico-ricarico la pendenza, molto minore, è l'indice di rigonfiamento Cs.","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"2 - Intermedio","sondaggio":"Compressibilità","codice":"C2","domanda":"Come si chiama il tratto della curva di compressibilità percorso per tensioni superiori alla pressione di preconsolidazione σ'p? Tratto di compressione …","risposta_canonica":"vergine","risposte_alternative":"normalconsolidato; normalmente consolidato","nota":"Il gomito della curva individua σ'p (costruzione di Casagrande). OCR = σ'p/σ'v0 distingue terreni NC e OC.","fonte":"Casagrande A. (1936); Lancellotta R., Geotecnica, Zanichelli"}]},{"id":"s3","rows":[{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"P","domanda":"Come si chiama il [[fenomeno]] per cui una [[sabbia]] {{sciolta}} [[satura]], sotto [[azioni]] {{sismiche}} in condizioni {{non drenate}}, [[perde]] quasi tutta la [[resistenza]] per l'[[annullarsi]] delle [[tensioni]] [[efficaci]]?","risposta_canonica":"liquefazione","risposte_alternative":"liquefazione sismica; liquefaction; liquefazione ciclica","nota":"Il carico ciclico tende a compattare la sabbia; se il drenaggio è impedito cresce u fino a σ' ≈ 0. Le NTC 2018 (§7.11.3.4) chiedono la verifica, per esempio con FSL = CRR/CSR. Nel terremoto dell'Emilia del 2012 il fenomeno ha colpito San Carlo e Mirabello.","fonte":"NTC 2018 (D.M. 17/01/2018), § 7.11.3.4; Idriss I.M., Boulanger R.W. (2008), Soil Liquefaction During Earthquakes, EERI"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"A","domanda":"Come si definisce una sabbia con bassa {{densità relativa}} che, sottoposta a taglio, tende a {{contrarre}}?","risposta_canonica":"sciolta","risposte_alternative":"sciolte; sciolto; poco addensata; lasca; molto sciolta","nota":"Lo stato sciolto o denso va sempre letto insieme alla tensione efficace (stato critico): la stessa e può essere contraente a σ' alta e dilatante a σ' bassa.","fonte":"Lancellotta R., Geotecnica, Zanichelli"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"A1","domanda":"Quale grandezza, Dr = (emax − e)/(emax − emin), esprime lo stato di addensamento di un terreno a grana grossa?","risposta_canonica":"densità relativa","risposte_alternative":"densita relativa; dr; indice di densita; indice di densità; densita relativa dr","nota":"In sito si stima spesso da prove SPT o CPT con correlazioni empiriche.","fonte":"ASTM D4253 / D4254 (indici di densità massima e minima)"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"A2","domanda":"Durante il taglio una sabbia densa tende a dilatare; una sabbia poco addensata tende invece a … (verbo: ridurre il proprio volume).","risposta_canonica":"contrarre","risposte_alternative":"contrarsi; comprimersi; compattarsi; ridurre di volume; contrarre il volume","nota":"In condizioni non drenate la tendenza a contrarre si traduce in aumento di u, e quindi in calo di σ'.","fonte":"Casagrande A. (1936), Characteristics of cohesionless soils affecting the stability of slopes and earth fills"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"B","domanda":"Come si chiamano le azioni dovute ai terremoti, definite dalle {{NTC}} 2018 attraverso lo {{spettro}} di risposta elastico? Azioni …","risposta_canonica":"sismiche","risposte_alternative":"sismica; sismico; sisma; terremoto; dinamiche","nota":"L'azione dipende dalla pericolosità del sito (ag, F0, T*C) e dalla categoria di sottosuolo (A–E), che amplifica il moto.","fonte":"NTC 2018 (D.M. 17/01/2018), § 3.2"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"B1","domanda":"Con quale sigla di tre lettere si indica il D.M. 17 gennaio 2018, riferimento normativo italiano per la progettazione strutturale e geotecnica?","risposta_canonica":"NTC","risposte_alternative":"ntc 2018; ntc2018; ntc18","nota":"La Circolare n. 7/2019 ne fornisce le istruzioni applicative.","fonte":"D.M. 17 gennaio 2018, G.U. n. 42 del 20/02/2018"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"B2","domanda":"Come si chiama il diagramma che riporta la risposta massima (per esempio l'accelerazione) di oscillatori semplici al variare del periodo proprio T? … di risposta.","risposta_canonica":"spettro","risposte_alternative":"spettro di risposta","nota":"Le NTC forniscono spettri elastici e di progetto in funzione dello stato limite e del tempo di ritorno.","fonte":"NTC 2018 (D.M. 17/01/2018), § 3.2.3"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"C","domanda":"In quali condizioni si porta a rottura il provino nella fase finale di una prova {{triassiale}} CU, a pressione di {{cella}} costante e con drenaggio impedito? Condizioni …","risposta_canonica":"non drenate","risposte_alternative":"non drenata; non drenato; non drenati; nondrenate; undrained","nota":"In CU si misura u durante il taglio: così si ottengono sia i parametri efficaci (c', φ') sia il percorso tensionale non drenato.","fonte":"ASTM D4767 (triassiale consolidata non drenata)"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"C1","domanda":"Quale prova di laboratorio applica a un provino cilindrico, rivestito da una membrana, una pressione di confinamento σ3 e un carico assiale crescente fino a rottura?","risposta_canonica":"triassiale","risposte_alternative":"prova triassiale; triassiali; triax","nota":"Le varianti UU, CU e CD differiscono per il drenaggio nelle fasi di consolidazione e di taglio.","fonte":"Bishop A.W., Henkel D.J. (1962), The Measurement of Soil Properties in the Triaxial Test"},{"livello":"3 - Avanzato","sondaggio":"Liquefazione","codice":"C2","domanda":"Nella prova triassiale, come si chiama la camera piena d'acqua che contiene il provino e ne applica la pressione di confinamento σ3? Pressione di …","risposta_canonica":"cella","risposte_alternative":"camera; camera triassiale; cella triassiale","nota":"La differenza tra pressione di cella e contropressione (back pressure) è la tensione efficace di consolidazione.","fonte":"Bishop A.W., Henkel D.J. (1962), The Measurement of Soil Properties in the Triaxial Test"}]}]}</script>
+<script>
+/* Copia del sorgente, presa prima di qualsiasi modifica: serve solo nella versione file per "Scarica pagina aggiornata". */
+const IN_VIEWER = !!(window.claude && typeof window.claude.use === "function");
+const SOURCE = IN_VIEWER ? null : "<!doctype html>\n" + document.documentElement.outerHTML;
+
+/* ===== Formato dei fogli di calcolo ===== */
+const CODES = ["P","A","A1","A2","B","B1","B2","C","C1","C2"];
+const LIVELLI = {1:"Base", 2:"Intermedio", 3:"Avanzato"};
+const HEADERS = {"livello":"livello","sondaggio":"sondaggio","titolo":"sondaggio","codice":"codice","domanda":"domanda",
+  "risposta canonica":"risposta_canonica","risposta":"risposta_canonica","risposte alternative":"risposte_alternative","alternative":"risposte_alternative",
+  "nota didattica":"nota","nota":"nota","fonte":"fonte","fonti":"fonte"};
+const txt = v => String(v==null?"":v).trim();
+function normH(s){ return txt(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/\s+/g," "); }
+function parseLivello(v){ const s=txt(v).toLowerCase(); const m=s.match(/[123]/); if(m) return +m[0];
+  if(s.includes("base")) return 1; if(s.includes("intermed")) return 2; if(s.includes("avanzat")) return 3; return null; }
+
+/* Controlla le 10 righe e costruisce il sondaggio. Restituisce {errors} oppure {errors:[], livello, titolo, root}. */
+function validate(rows){
+  if(!rows.some(r=>txt(r.domanda)||txt(r.risposta_canonica))) return {errors:["Il foglio Domande è ancora vuoto: compila le 10 righe."]};
+  const errs=[], by={};
+  for(const r of rows){ const c=txt(r.codice).toUpperCase(); if(!CODES.includes(c)) continue; if(by[c]) errs.push(`Codice ${c} ripetuto.`); by[c]=r; }
+  const missing=CODES.filter(c=>!by[c]); if(missing.length) errs.push(`Mancano le righe con codice ${missing.join(", ")}.`);
+  for(const c of CODES){ const r=by[c]; if(!r) continue; const q=txt(r.domanda);
+    if(!q) errs.push(`Riga ${c}: manca la domanda.`);
+    if(!txt(r.risposta_canonica)) errs.push(`Riga ${c}: manca la risposta canonica.`);
+    if((q.match(/\{\{/g)||[]).length!==(q.match(/\}\}/g)||[]).length) errs.push(`Riga ${c}: le parentesi {{ }} non sono bilanciate.`);
+    if((q.match(/\[\[/g)||[]).length!==(q.match(/\]\]/g)||[]).length) errs.push(`Riga ${c}: le parentesi [[ ]] non sono bilanciate.`);
+    const nClue=(q.match(/\{\{[^{}]+\}\}/g)||[]).length, nHid=(q.match(/\[\[[^\[\]]+\]\]/g)||[]).length;
+    const want = c==="P"?3:(c.length===1?2:0);
+    if(nClue!==want) errs.push(`Riga ${c}: servono ${want} indizi {{…}}, ne ho trovati ${nClue}.`);
+    if(c==="P" && nHid!==CODES.length-1) errs.push(`Riga P: servono ${CODES.length-1} parole oscurate [[…]], una per ogni bonus possibile; ne ho trovate ${nHid}.`);
+    if(c!=="P" && nHid) errs.push(`Riga ${c}: le parole oscurate [[…]] vanno solo nella riga P.`);
+  }
+  const P=by.P||{}; const liv=parseLivello(P.livello);
+  if(!liv) errs.push("Livello non riconosciuto nella riga P: usa 1 - Base, 2 - Intermedio o 3 - Avanzato.");
+  const lv=new Set(CODES.filter(c=>by[c]&&txt(by[c].livello)).map(c=>parseLivello(by[c].livello)));
+  if(lv.size>1) errs.push("Il livello non è lo stesso su tutte le righe.");
+  const titolo=txt(P.sondaggio)||txt((rows.find(r=>txt(r.sondaggio))||{}).sondaggio);
+  if(!titolo) errs.push("Manca il titolo nella colonna sondaggio.");
+  if(errs.length) return {errors:errs};
+  const mk=(c,keys)=>{ const r=by[c]; let i=0;
+    const q=txt(r.domanda).replace(/\{\{([^{}]+)\}\}/g,(m,w)=>`{{${keys[i++]}|${w.trim()}}}`);
+    const canon=txt(r.risposta_canonica);
+    const alts=[canon, ...txt(r.risposte_alternative).split(/[;\n]/).map(x=>x.trim()).filter(Boolean)];
+    return {q, canon, alts, note:txt(r.nota), fonte:txt(r.fonte)}; };
+  const root=mk("P",["a","b","c"]); root.kids={};
+  ["A","B","C"].forEach(L=>{ const n=mk(L,["1","2"]); n.kids={"1":mk(L+"1",[]),"2":mk(L+"2",[])}; root.kids[L.toLowerCase()]=n; });
+  return {errors:[], livello:liv, titolo, root};
+}
+
+/* ===== Catalogo dei sondaggi ===== */
+let published=[];   // sondaggi della pagina: [{id, rows}]
+let previews=[];    // caricati da questo visitatore: [{id, rows, origin:"anteprima"|"locale"}]
+let catalog=[];     // sondaggi validi pronti da giocare
+try{ published = JSON.parse(document.getElementById("sondaggi-data").textContent).sondaggi || []; }catch(e){ published=[]; }
+try{ const loc = JSON.parse(localStorage.getItem("cs-geo-locali")); if(!IN_VIEWER && Array.isArray(loc)) previews = loc.map(x=>({...x, origin:"locale"})); }catch(e){}
+function saveLocali(){ if(IN_VIEWER) return; try{ localStorage.setItem("cs-geo-locali", JSON.stringify(previews.filter(p=>p.origin==="locale").map(({id,rows})=>({id,rows})))); }catch(e){} }
+function rebuild(){
+  catalog=[];
+  const add=(e,origin)=>{ const v=validate(e.rows||[]); if(v.errors.length){ console.warn("Sondaggio scartato", e.id, v.errors); return; } catalog.push({id:e.id, origin, rows:e.rows, livello:v.livello, titolo:v.titolo, root:v.root}); };
+  published.forEach(e=>add(e,"pagina")); previews.forEach(e=>add(e,e.origin));
+}
+const inLevel = l => catalog.filter(s=>s.livello===l);
+function newId(){ return "u"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+/* ===== Motore di gioco ===== */
+const LETTERS=["A","B","C"];
+const RULES={start:100, subWrong:2, subReveal:5, bonusUse:2, mainWrong:5, mainTries:3};
+let flat={}, state={}, flashId=null;
+let sel={liv:1, id:null};
+function load(){ try{ state=JSON.parse(localStorage.getItem("cs-geo-v4"))||{}; }catch(e){ state={}; } try{ const s=JSON.parse(localStorage.getItem("cs-geo-sel")); if(s&&s.liv) sel=s; }catch(e){} }
+function save(){ try{ localStorage.setItem("cs-geo-v4", JSON.stringify(state)); localStorage.setItem("cs-geo-sel", JSON.stringify(sel)); }catch(e){} }
+function cur(){ let s=catalog.find(x=>x.id===sel.id && x.livello===sel.liv); if(!s){ s=inLevel(sel.liv)[0]||null; sel.id=s?s.id:null; } return s; }
+function build(){ flat={}; const s=cur(); if(!s) return;
+  (function walk(node,id,parent,depth,label){ flat[id]={node,parent,depth,label,id};
+    Object.keys(node.kids||{}).forEach((k,i)=>walk(node.kids[k], id==="root"?k:id+"."+k, id, depth+1, depth===0?LETTERS[i]:label+(i+1)));
+  })(s.root,"root",null,0,"Principale"); }
+function S(id){ id=id||sel.id; if(!state[id]) state[id]={nodes:{},cur:"root"}; return state[id]; }
+function ns(id){ const s=S(); if(!s.nodes[id]) s.nodes[id]={st:"open",wrong:0,seen:false}; return s.nodes[id]; }
+
+function norm(s){ return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[’`]/g,"'")
+  .replace(/^(il|lo|la|i|gli|le|un|una|uno|l')\s*/,"").replace(/[^a-z0-9σ' ]/g," ").replace(/\s+/g," ").trim(); }
+function lev(a,b){ const m=a.length,n=b.length; if(!m) return n; if(!n) return m; let p=[...Array(n+1).keys()];
+  for(let i=1;i<=m;i++){ const c=[i]; for(let j=1;j<=n;j++) c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1)); p=c; } return p[n]; }
+function matches(input,node){ const x=norm(input), xs=x.replace(/ /g,""); if(!x) return false;
+  return node.alts.concat(node.canon).some(a=>{ const y=norm(a), ys=y.replace(/ /g,""); if(x===y||xs===ys) return true;
+    const tol=ys.length>=10?2:ys.length>=6?1:0; return tol>0 && lev(xs,ys)<=tol; }); }
+
+function tally(s){
+  let subWrong=0, subRev=0, solved=0; const n=s.nodes;
+  for(const id in n){ if(id==="root") continue; subWrong+=n[id].wrong; if(n[id].st==="revealed") subRev++; if(n[id].st==="solved") solved++; }
+  const used=(s.bonus||[]).length, mw=n.root?n.root.wrong:0, failed=!!(n.root&&n.root.st==="failed");
+  const pts=failed?0:Math.max(0, RULES.start-RULES.subWrong*subWrong-RULES.subReveal*subRev-RULES.bonusUse*used-RULES.mainWrong*Math.min(mw,RULES.mainTries-1));
+  return {subWrong,subRev,solved,used,avail:solved-used,mw,failed,pts};
+}
+function finished(id){ const s=state[id]; return !!(s&&s.nodes.root&&(s.nodes.root.st==="solved"||s.nodes.root.st==="failed")); }
+function addLog(t,x,neg){ const s=S(); (s.log=s.log||[]).push({t,x,neg}); }
+function spendBonus(idx){ const s=S(); if(ns("root").st!=="open"||tally(s).avail<=0) return; s.bonus=s.bonus||[]; if(s.bonus.includes(idx)) return;
+  s.bonus.push(idx); addLog("Bonus usato: parola svelata",`−${RULES.bonusUse}`,true); save(); renderAll(); }
+
+function esc(t){ return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function renderText(id){
+  const f=flat[id], node=f.node, me=ns(id), done=me.st!=="open";
+  let wi=0; const st0=S(), bon=st0.bonus||[], canSpend=id==="root" && !done && tally(st0).avail>0;
+  return node.q.split(/(\{\{[^}]+\}\}|\[\[[^\]]+\]\])/).map(seg=>{
+    const m=seg.match(/^\{\{(\w+)\|([^}]+)\}\}$/);
+    if(m){ const cid=id==="root"?m[1]:id+"."+m[1]; if(!flat[cid]) return esc(m[2]); const cs=ns(cid), lab=flat[cid].label;
+      if(cs.st==="open") return `<button class="clue" type="button" data-go="${cid}" aria-label="Indizio ${lab}: apri la domanda"><span class="k">${lab}</span>?</button>`;
+      return `<button class="clue ${cs.st}${flashId===cid?" flash":""}" type="button" data-go="${cid}" title="Indizio ${lab}">${esc(m[2])}</button>`; }
+    const h=seg.match(/^\[\[([^\]]+)\]\]$/);
+    if(h){ const word=h[1];
+      if(done||f.depth>0) return `<span class="full">${esc(word)}</span>`;
+      const len=Math.max(2,Math.min(14,[...word].length)), idx=wi++, wd=(len*0.58).toFixed(2);
+      if(bon.includes(idx)) return `<span class="bw">${esc(word)}</span>`;
+      if(canSpend) return `<button type="button" class="r rb" data-word="${idx}" style="width:${wd}em" aria-label="Usa un bonus per svelare questa parola"></button>`;
+      return `<span class="r" style="width:${wd}em" aria-label="parola oscurata"></span>`; }
+    return `<span class="full">${esc(seg)}</span>`;
+  }).join("");
+}
+
+function renderTabs(){
+  document.getElementById("tabs").innerHTML=[1,2,3].map(l=>{ const list=inLevel(l), done=list.filter(s=>finished(s.id)).length;
+    return `<button class="tab" role="tab" type="button" aria-selected="${l===sel.liv}" data-liv="${l}">
+      <span><small>Livello ${l}</small><b>${LIVELLI[l]}</b></span><span class="badge" title="Sondaggi completati">${list.length?done+"/"+list.length:"–"}</span></button>`; }).join("");
+}
+function renderStrip(){
+  const list=inLevel(sel.liv);
+  document.getElementById("strip").innerHTML = `<span class="mono lbl">Sondaggi · ${LIVELLI[sel.liv]}</span>` + (list.length ? list.map((s,i)=>{
+    const sc=finished(s.id)?`<span class="p">${tally(state[s.id]).pts}</span>`:"";
+    const tag=s.origin!=="pagina"?`<span class="tag">${s.origin==="locale"?"locale":"anteprima"}</span>`:"";
+    return `<button class="sond" type="button" data-sond="${s.id}" aria-pressed="${s.id===sel.id}"><span class="n">S${i+1}</span><span class="t">${esc(s.titolo)}</span>${tag}${sc}</button>`; }).join("")
+    : `<span class="empty">Nessun sondaggio in questo livello. Aggiungine uno da “Aggiungi sondaggi”.</span>`);
+}
+function renderMap(){
+  const bore=document.getElementById("bore"); const s=cur(); bore.hidden=!s; if(!s) return;
+  const curNode=S().cur;
+  const nodeBtn=(id,span)=>{ const f=flat[id], st=ns(id).st, parentSeen=!f.parent||ns(f.parent).seen;
+    const lab=id==="root"?"Domanda principale":f.label;
+    return `<button class="node ${st}${id===curNode?" cur":""}" data-span="${span}" type="button" data-go="${id}" ${parentSeen?"":"disabled"} title="${esc(lab)}">${esc(st==="open"?lab:f.node.canon)}</button>`; };
+  const l1=Object.keys(flat).filter(k=>flat[k].depth===1), l2=Object.keys(flat).filter(k=>flat[k].depth===2);
+  document.getElementById("map").innerHTML=
+    `<div class="stratum s0">${nodeBtn("root",6)}</div>
+     <div class="stratum s1"><span class="lab mono">Strato 1 · sabbia</span>${l1.map(k=>nodeBtn(k,2)).join("")}</div>
+     <div class="stratum s2"><span class="lab mono">Strato 2 · argilla</span>${l2.map(k=>nodeBtn(k,1)).join("")}</div>`;
+  const t=tally(S());
+  document.getElementById("liveGrade").textContent=t.pts;
+  document.getElementById("cheatTxt").textContent=`${t.solved} indizi risolti · ${t.subWrong} errori negli strati`;
+  document.getElementById("bonusTokens").innerHTML=t.avail>0?Array.from({length:t.avail},()=>'<i class="tok b"></i>').join("")+` <span>${t.avail}</span>`:'<span class="none">nessuno</span>';
+  const left=Math.max(0,RULES.mainTries-t.mw);
+  document.getElementById("attTokens").innerHTML=Array.from({length:RULES.mainTries},(_,i)=>`<i class="tok ${i<left?"a":"x"}"></i>`).join("")+` <span>${left}</span>`;
+  const log=S().log||[];
+  document.getElementById("log").innerHTML=log.slice(-6).reverse().map(l=>`<li><span>${esc(l.t)}</span><b class="${l.neg?"neg":"pos"}">${esc(l.x)}</b></li>`).join("");
+  document.getElementById("sNum").textContent="S"+(inLevel(sel.liv).findIndex(x=>x.id===s.id)+1);
+}
+function nextSond(){ const order=[1,2,3].flatMap(l=>inLevel(l)); const i=order.findIndex(x=>x.id===sel.id); return order[i+1]||null; }
+function renderCard(){
+  const card=document.getElementById("card"); const sd=cur();
+  if(!sd){ card.innerHTML=`<div class="eyebrow"><span class="mono" style="color:var(--muted)">Livello ${sel.liv} · ${LIVELLI[sel.liv]}</span></div><p class="q" style="font-size:19px">Questo livello non ha ancora sondaggi.</p><p class="hint">Apri “Aggiungi sondaggi” e carica un foglio di calcolo con <code>livello</code> = ${sel.liv} - ${LIVELLI[sel.liv]}.</p>`; return; }
+  const s=S(), id=flat[s.cur]?s.cur:"root", f=flat[id], node=f.node, me=ns(id);
+  me.seen=true;
+  const chain=[]; let p=f.parent; while(p){ chain.unshift(p); p=flat[p].parent; }
+  const crumbs=chain.length?`<nav class="crumbs mono" aria-label="Percorso">${chain.map(c=>`<button type="button" data-go="${c}">${c==="root"?"Domanda principale":"Indizio "+flat[c].label}</button><span>›</span>`).join("")}<span>Indizio ${f.label}</span></nav>`:"";
+  const eyebrowTxt=f.depth===0?`Livello ${sd.livello} · ${esc(sd.titolo)} · Domanda principale`:`Indizio ${f.label} · strato ${f.depth}`;
+  const pill=me.st==="open"?`<span class="pill open">da risolvere</span>`:me.st==="solved"?`<span class="pill solved">risolta</span>`:me.st==="failed"?`<span class="pill revealed">non superata</span>`:`<span class="pill revealed">rivelata</span>`;
+  let body=`${crumbs}<div class="eyebrow"><span class="mono" style="color:var(--muted)">${eyebrowTxt}</span>${pill}</div><p class="q">${renderText(id)}</p>`;
+  const fid="ans-"+id.replace(/\./g,"-");
+  if(me.st==="open"){
+    body+=`<form class="ans" id="ansForm" autocomplete="off"><label class="mono" for="${fid}" style="flex-basis:100%;color:var(--muted)">La tua risposta${f.depth===0?` · tentativo ${me.wrong+1} di ${RULES.mainTries}`:""}</label>
+      <input id="${fid}" name="a" placeholder="${f.depth===2?"Scrivi la risposta":"Rispondi ora o apri un indizio"}" autocapitalize="off" spellcheck="false">
+      <button class="btn" type="submit">Rispondi</button>
+      ${f.depth>0?`<button class="btn ghost" type="button" id="giveUp">Rivela (−${RULES.subReveal})</button>`:""}</form><p class="fb" id="fb"></p>`;
+    if(f.depth===0){ const av=tally(S()).avail; body+=`<p class="hint">${av>0?`<b>Hai ${av} bonus</b>: tocca una parola oscurata per svelarla (−${RULES.bonusUse} punti). `:"Ogni indizio risolto ti dà un bonus per svelare una parola oscurata. "}Le parole tratteggiate sono indizi: aprile per scendere di uno strato.</p>`; }
+    else if(f.depth===1) body+=`<p class="hint">Testo in chiaro: mancano solo le parole tratteggiate. Se non le ricavi, aprile per scendere allo strato 2.</p>`;
+  } else {
+    body+=`<div class="answer"><span class="mono" style="color:var(--muted)">Risposta</span><strong>${esc(node.canon)}</strong></div>`;
+    if(node.note||node.fonte) body+=`<div class="note"><span class="mono">Per approfondire</span>${node.note?`<p>${esc(node.note)}</p>`:""}${node.fonte?`<p class="src">Fonte: ${esc(node.fonte)}</p>`:""}</div>`;
+    if(id==="root"){
+      const t=tally(S());
+      const parts=[]; if(t.subWrong) parts.push(`errori negli strati −${t.subWrong*RULES.subWrong}`); if(t.subRev) parts.push(`risposte rivelate −${t.subRev*RULES.subReveal}`); if(t.used) parts.push(`bonus usati −${t.used*RULES.bonusUse}`); if(t.mw) parts.push(`tentativi errati −${Math.min(t.mw,RULES.mainTries-1)*RULES.mainWrong}`);
+      const msg=t.failed?"Tre tentativi esauriti: sondaggio non superato, 0 punti. Usa “Ricomincia questo sondaggio” per riprovare.":parts.length?`Penalità: ${parts.join(" · ")}.`:"Nessuna penalità: punteggio pieno.";
+      const nx=nextSond();
+      const next=nx?`<div><button class="btn" type="button" data-sond="${nx.id}" data-liv="${nx.livello}">Prossimo: ${nx.livello!==sd.livello?"Livello "+nx.livello+" · ":""}${esc(nx.titolo)}</button></div>`:"";
+      body=`<div class="result"><div class="grade">${t.pts}<small>/100</small></div><p class="mono" style="color:var(--muted)">${esc(sd.titolo)}</p><p>${msg}</p></div>`+body+next;
+    } else {
+      body+=`<div><button class="btn" type="button" data-go="${f.parent}">Torna ${f.parent==="root"?"alla domanda principale":"all'indizio "+flat[f.parent].label}</button></div>`;
+    }
+  }
+  card.innerHTML=body;
+  const form=document.getElementById("ansForm");
+  if(form){
+    form.addEventListener("submit",e=>{ e.preventDefault(); const v=form.a.value, fb=document.getElementById("fb");
+      if(!v.trim()) return;
+      if(matches(v,node)){ me.st="solved"; addLog(id==="root"?"Domanda principale risolta":`Indizio ${f.label} risolto`, id==="root"?"✓":"+1 bonus", false); save(); afterSolve(id); return; }
+      me.wrong++;
+      if(id==="root"){
+        if(me.wrong>=RULES.mainTries){ me.st="failed"; addLog("Terzo tentativo errato","sondaggio perso",true); save(); renderAll(); return; }
+        addLog(`Tentativo ${me.wrong} errato`,`−${RULES.mainWrong}`,true); save(); renderAll();
+        const fb2=document.getElementById("fb"), left=RULES.mainTries-me.wrong; fb2.className="fb no"; fb2.textContent=`Non è questa: −${RULES.mainWrong} punti. ${left===1?"Ultimo tentativo.":"Restano "+left+" tentativi."}`;
+        return; }
+      addLog(`Errore su indizio ${f.label}`,`−${RULES.subWrong}`,true); save(); fb.className="fb no"; fb.textContent=`Non è questa: −${RULES.subWrong} punti.`; form.a.select(); renderMap();
+    });
+    const gu=document.getElementById("giveUp"); if(gu) gu.addEventListener("click",()=>{ me.st="revealed"; addLog(`Indizio ${f.label} rivelato`,`−${RULES.subReveal}`,true); save(); afterSolve(id); });
+    if(matchMedia("(pointer:fine)").matches) form.a.focus({preventScroll:true});
+  }
+  flashId=null;
+}
+function afterSolve(id){ const f=flat[id]; if(f.parent){ flashId=id; S().cur=f.parent; } save(); renderAll(); }
+function go(id){ if(!flat[id]) return; const f=flat[id]; if(f.parent && !ns(f.parent).seen) return; S().cur=id; save(); renderAll(); document.getElementById("card").scrollIntoView({block:"nearest",behavior:"smooth"}); }
+function renderAll(){ cur(); build(); renderCard(); renderMap(); renderTabs(); renderStrip(); renderManager(); }
+
+document.addEventListener("click",e=>{
+  const w=e.target.closest("[data-word]"); if(w){ spendBonus(+w.dataset.word); return; }
+  const g=e.target.closest("[data-go]"); if(g){ go(g.dataset.go); return; }
+  const sb=e.target.closest("[data-sond]"); if(sb){ const s=catalog.find(x=>x.id===sb.dataset.sond); if(s){ sel={liv:s.livello,id:s.id}; save(); renderAll(); window.scrollTo({top:0,behavior:"smooth"}); } return; }
+  const t=e.target.closest("[data-liv]"); if(t){ sel={liv:+t.dataset.liv,id:null}; cur(); save(); renderAll(); }
+});
+document.getElementById("reset").addEventListener("click",()=>{ if(sel.id){ delete state[sel.id]; save(); renderAll(); } });
+
+/* ===== Caricamento dei fogli di calcolo ===== */
+let art=null, canPublish=false, pending=[], confirmId=null;
+function loadScript(src){ return new Promise((ok,ko)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=()=>ko(new Error("script")); document.head.appendChild(s); }); }
+async function ensureXLSX(){ if(window.XLSX) return; await loadScript("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"); }
+async function readFile(file){
+  await ensureXLSX();
+  const wb=XLSX.read(await file.arrayBuffer(),{type:"array"});
+  const ws=wb.Sheets["Domande"]||wb.Sheets[wb.SheetNames[0]];
+  const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:false});
+  const hi=aoa.findIndex(r=>r.some(c=>normH(c)==="codice"));
+  if(hi<0) return {errors:["Non trovo la riga di intestazione con la colonna codice. Usa il modello."]};
+  const keys=aoa[hi].map(h=>HEADERS[normH(h)]||null);
+  for(const k of ["codice","domanda","risposta_canonica"]) if(!keys.includes(k)) return {errors:[`Manca la colonna ${k.replace("_"," ")}.`]};
+  const rows=aoa.slice(hi+1).map(r=>{ const o={}; keys.forEach((k,i)=>{ if(k) o[k]=txt(r[i]); }); return o; }).filter(o=>CODES.includes(txt(o.codice).toUpperCase()));
+  const v=validate(rows);
+  if(!v.errors.length && catalog.some(s=>s.livello===v.livello && s.titolo.toLowerCase()===v.titolo.toLowerCase())) v.warn=`Esiste già un sondaggio “${v.titolo}” nel livello ${v.livello}: verrà aggiunto come nuovo.`;
+  return {...v, rows};
+}
+function setStatus(msg,kind){ const el=document.getElementById("status"); el.textContent=msg||""; el.className="status"+(kind?" "+kind:""); }
+async function handleFiles(files){
+  if(!files.length) return;
+  setStatus("Lettura dei file…"); pending=[];
+  for(const file of files){
+    try{ const r=await readFile(file); pending.push({name:file.name, ...r}); }
+    catch(e){ pending.push({name:file.name, errors:[e.message==="script"?"Non riesco a caricare il lettore di fogli di calcolo: serve la connessione a internet.":"Il file non è un foglio di calcolo leggibile (.xlsx, .xls o .csv)."]}); }
+  }
+  setStatus(""); renderPending();
+}
+function renderPending(){
+  document.getElementById("rep").innerHTML=pending.map(p=> p.errors.length
+    ? `<li class="err"><b>${esc(p.name)}: da correggere</b><ul>${p.errors.map(e=>`<li>${esc(e)}</li>`).join("")}</ul></li>`
+    : `<li><b>${esc(p.name)}</b>Livello ${p.livello} · ${esc(p.titolo)} · 10 domande valide${p.warn?`<br><span style="color:var(--muted)">${esc(p.warn)}</span>`:""}</li>`).join("");
+  const ok=pending.filter(p=>!p.errors.length); const a=[];
+  if(ok.length){
+    a.push(`<button class="btn ghost" type="button" id="doPreview">Gioca in anteprima</button>`);
+    if(art && canPublish) a.push(`<button class="btn" type="button" id="doPublish">Pubblica nella pagina (${ok.length})</button>`);
+    if(!IN_VIEWER) a.push(`<button class="btn" type="button" id="doSaveLocal">Aggiungi a questo file (${ok.length})</button>`);
+  }
+  document.getElementById("actions").innerHTML=a.join("");
+  const bind=(id,fn)=>{ const b=document.getElementById(id); if(b) b.addEventListener("click",fn); };
+  bind("doPreview",()=>addPreviews(IN_VIEWER?"anteprima":"locale"));
+  bind("doSaveLocal",()=>addPreviews("locale"));
+  bind("doPublish",async()=>{ const ok=pending.filter(p=>!p.errors.length); const items=ok.map(p=>({id:newId(), rows:p.rows}));
+    if(await publishList(published.concat(items), `Pubblicati ${items.length} sondaggi: ora li vede chiunque apra la pagina.`)){ pending=[]; renderPending(); selectFirst(items[0].id); } });
+}
+function addPreviews(origin){
+  const ok=pending.filter(p=>!p.errors.length); const items=ok.map(p=>({id:newId(), rows:p.rows, origin}));
+  previews=previews.concat(items); saveLocali(); rebuild(); pending=[]; renderPending();
+  setStatus(origin==="locale" ? `Aggiunti ${items.length} sondaggi a questo browser. Per condividerli usa “Scarica pagina aggiornata”.` : `${items.length} sondaggi in anteprima: li vedi solo tu, fino alla chiusura della pagina.`, "ok");
+  selectFirst(items[0].id);
+}
+function selectFirst(id){ rebuild(); const s=catalog.find(x=>x.id===id); if(s){ sel={liv:s.livello,id:s.id}; save(); } renderAll(); }
+
+async function publishList(list,okMsg){
+  if(!art) return false;
+  setStatus("Pubblicazione in corso…");
+  try{
+    await art.publish({"sondaggi.json": JSON.stringify({formato:1, sondaggi:list}, null, 1)});
+    published=list; const keep=new Set(list.map(x=>x.id)); previews=previews.filter(p=>!keep.has(p.id));
+    rebuild(); renderAll(); setStatus(okMsg,"ok"); return true;
+  }catch(e){
+    const c=e&&e.code;
+    if(c==="conflict") setStatus("La pagina è appena stata aggiornata da qualcun altro e si sta ricaricando: ricarica poi il file.","no");
+    else if(["not_writer","not_granted","not_declared","consent_required","capability_disabled","capability_removed"].includes(c)){ canPublish=false; renderPending(); renderManager(); setStatus("Da qui non puoi pubblicare: solo chi può modificare la pagina, aperta da claude.ai, può farlo. Usa l'anteprima.","no"); }
+    else if(c==="rate_limited") setStatus("Troppe pubblicazioni ravvicinate: riprova tra qualche minuto.","no");
+    else if(c==="too_large") setStatus("I sondaggi sono troppi per una sola pagina: rimuovine qualcuno.","no");
+    else setStatus("Pubblicazione non riuscita per un problema temporaneo. Riprova tra poco.","no");
+    return false;
+  }
+}
+function downloadPage(){
+  if(!SOURCE) return;
+  const list=published.concat(previews.filter(p=>p.origin==="locale").map(({id,rows})=>({id,rows})));
+  const json=JSON.stringify({formato:1,sondaggi:list}).replace(/</g,"\\u003c");
+  const open='<script type="application/json" id="sondaggi-data">'; const i=SOURCE.indexOf(open), j=SOURCE.indexOf("</scr"+"ipt>",i);
+  const html=SOURCE.slice(0,i+open.length)+json+SOURCE.slice(j);
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([html],{type:"text/html"})); a.download="cheatsheet.html";
+  document.body.appendChild(a); a.click(); a.remove();
+  setStatus("Pagina scaricata (cheatsheet.html): caricala al posto della versione pubblicata, per esempio nel repository GitHub.","ok");
+}
+function renderManager(){
+  document.getElementById("modeTxt").textContent =
+    !IN_VIEWER ? "Versione file: i sondaggi aggiunti restano salvati in questo browser. Per distribuirli usa “Scarica pagina aggiornata” e condividi il nuovo file."
+    : (art && canPublish) ? "I sondaggi pubblicati diventano visibili a chiunque apra questa pagina."
+    : "Puoi provare i tuoi fogli in anteprima. Solo chi può modificare la pagina può pubblicarli per tutti.";
+  const rows=[];
+  for(const s of catalog){
+    const n=inLevel(s.livello).findIndex(x=>x.id===s.id)+1;
+    const who=`<span class="who"><small>L${s.livello} · S${n}${s.origin!=="pagina"?" · "+(s.origin==="locale"?"locale":"anteprima"):""}</small>${esc(s.titolo)}</span>`;
+    let btns="";
+    if(s.origin==="pagina"){ if(art&&canPublish) btns = confirmId===s.id ? `<button class="mini warn" type="button" data-del="${s.id}">Conferma rimozione</button><button class="mini" type="button" data-cancel="1">Annulla</button>` : `<button class="mini" type="button" data-ask="${s.id}">Rimuovi</button>`; }
+    else { btns = (art&&canPublish?`<button class="mini go" type="button" data-pub="${s.id}">Pubblica</button>`:"") + (confirmId===s.id ? `<button class="mini warn" type="button" data-drop="${s.id}">Conferma</button>` : `<button class="mini" type="button" data-ask="${s.id}">Togli</button>`); }
+    if(btns) rows.push(`<li>${who}<span>${btns}</span></li>`);
+  }
+  if(!IN_VIEWER) rows.push(`<li><span class="who" style="color:var(--muted)">Pagina con ${published.length+previews.filter(p=>p.origin==="locale").length} sondaggi</span><button class="mini go" type="button" id="doDownload">Scarica pagina aggiornata</button></li>`);
+  document.getElementById("mgr").innerHTML=rows.join("");
+  const dl=document.getElementById("doDownload"); if(dl) dl.addEventListener("click",downloadPage);
+}
+document.getElementById("mgr").addEventListener("click",async e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.ask){ confirmId=b.dataset.ask; renderManager(); return; }
+  if(b.dataset.cancel){ confirmId=null; renderManager(); return; }
+  if(b.dataset.drop){ previews=previews.filter(p=>p.id!==b.dataset.drop); delete state[b.dataset.drop]; confirmId=null; saveLocali(); save(); rebuild(); renderAll(); setStatus("Sondaggio tolto.","ok"); return; }
+  if(b.dataset.del){ const id=b.dataset.del; confirmId=null; await publishList(published.filter(x=>x.id!==id),"Sondaggio rimosso dalla pagina."); return; }
+  if(b.dataset.pub){ const p=previews.find(x=>x.id===b.dataset.pub); if(p) await publishList(published.concat([{id:p.id,rows:p.rows}]),"Sondaggio pubblicato: ora lo vede chiunque apra la pagina."); }
+});
+const fileIn=document.getElementById("fileIn"), box=document.getElementById("filebox");
+fileIn.addEventListener("change",()=>{ handleFiles([...fileIn.files]); fileIn.value=""; });
+box.addEventListener("dragover",e=>{ e.preventDefault(); box.classList.add("drag"); });
+box.addEventListener("dragleave",()=>box.classList.remove("drag"));
+box.addEventListener("drop",e=>{ e.preventDefault(); box.classList.remove("drag"); handleFiles([...e.dataTransfer.files]); });
+
+/* Tema chiaro/scuro */
+const ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>';
+const ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>';
+function curTheme(){ const a=document.documentElement.getAttribute("data-theme"); if(a==="dark"||a==="light") return a; return matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"; }
+function paintThemeBtn(){ const t=curTheme(), b=document.getElementById("themeBtn");
+  b.setAttribute("aria-pressed", String(t==="dark")); b.setAttribute("aria-label", t==="dark"?"Passa allo sfondo chiaro":"Passa allo sfondo scuro");
+  b.querySelector(".tl").textContent = t==="dark"?"Chiaro":"Scuro"; b.querySelector(".ic").innerHTML = t==="dark"?ICON_SUN:ICON_MOON; }
+function setTheme(t){ document.documentElement.setAttribute("data-theme",t); try{ localStorage.setItem("cs-geo-theme",t); }catch(e){} paintThemeBtn(); }
+try{ const saved=localStorage.getItem("cs-geo-theme"); if(saved==="dark"||saved==="light") document.documentElement.setAttribute("data-theme",saved); }catch(e){}
+paintThemeBtn();
+document.getElementById("themeBtn").addEventListener("click",()=>setTheme(curTheme()==="dark"?"light":"dark"));
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",paintThemeBtn);
+
+
+/* Avvio */
+load(); rebuild(); renderAll();
+if(IN_VIEWER){
+  (async()=>{
+    try{ const r=await fetch("sondaggi.json",{cache:"no-store"}); if(r.ok){ const d=await r.json(); if(d&&Array.isArray(d.sondaggi)){ published=d.sondaggi; rebuild(); renderAll(); } } }catch(e){}
+    try{
+      art=await window.claude.use("artifact");
+      if(art){ let ok=null; const u=await window.claude.use("user");
+        if(u){ try{ ok=await u.can("files.write"); }catch(e){} if(ok===null||ok===undefined){ try{ ok=await u.canEdit(); }catch(e){} } }
+        canPublish = ok!==false; }
+    }catch(e){ art=null; }
+    renderPending(); renderManager();
+  })();
+}
+</script>
+
+</body>
+</html>
