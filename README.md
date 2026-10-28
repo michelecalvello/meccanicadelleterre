@@ -10,9 +10,9 @@ Pagina del gioco: https://michelecalvello.github.io/meccanicadelleterre/cheatshe
 |---|---|
 | `cheatsheet.html` | Il gioco: una sola pagina HTML, senza dipendenze da installare |
 | `fogli/modello-sondaggio.xlsx` | Modello vuoto per scrivere un nuovo sondaggio |
-| `fogli/sondaggio-per-iniziare-tensioni-efficaci.xlsx` | Sondaggio "Tensioni efficaci" (Per iniziare) |
+| `fogli/sondaggio-per-iniziare-terreni-saturi.xlsx` | Sondaggio "Terreni saturi" (Per iniziare) |
 | `fogli/sondaggio-per-iniziare-compressibilita.xlsx` | Sondaggio "Compressibilità" (Per iniziare) |
-| `fogli/sondaggio-per-iniziare-liquefazione.xlsx` | Sondaggio "Liquefazione" (Per iniziare) |
+| `fogli/sondaggio-per-iniziare-azioni-sismiche.xlsx` | Sondaggio "Azioni sismiche" (Per iniziare) |
 
 ## Contenitori
 
