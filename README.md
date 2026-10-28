@@ -1,4 +1,4 @@
-# Meccanica delle terre · Cheat Sheet Geotecnico
+# Gioco a indizi · Meccanica delle terre
 
 Gioco didattico a indizi annidati sugli argomenti di meccanica delle terre, ispirato a *Cheat Sheet* di TED Games.
 
@@ -10,9 +10,23 @@ Pagina del gioco: https://michelecalvello.github.io/meccanicadelleterre/cheatshe
 |---|---|
 | `cheatsheet.html` | Il gioco: una sola pagina HTML, senza dipendenze da installare |
 | `fogli/modello-sondaggio.xlsx` | Modello vuoto per scrivere un nuovo sondaggio |
-| `fogli/sondaggio-L1-base-tensioni-efficaci.xlsx` | Sondaggio del livello 1 (Base) |
-| `fogli/sondaggio-L2-intermedio-compressibilita.xlsx` | Sondaggio del livello 2 (Intermedio) |
-| `fogli/sondaggio-L3-avanzato-liquefazione.xlsx` | Sondaggio del livello 3 (Avanzato) |
+| `fogli/sondaggio-per-iniziare-tensioni-efficaci.xlsx` | Sondaggio "Tensioni efficaci" (Per iniziare) |
+| `fogli/sondaggio-per-iniziare-compressibilita.xlsx` | Sondaggio "Compressibilità" (Per iniziare) |
+| `fogli/sondaggio-per-iniziare-liquefazione.xlsx` | Sondaggio "Liquefazione" (Per iniziare) |
+
+## Contenitori
+
+I sondaggi sono raccolti in sei contenitori, scelti con la colonna `contenitore` del foglio:
+
+1. Per iniziare
+2. Identificazione e classificazione
+3. Tensioni e deformazioni
+4. Filtrazione e consolidazione
+5. Comportamento meccanico
+6. Prove di laboratorio
+
+I contenitori ancora senza sondaggi compaiono nella pagina come "in preparazione".
+I fogli preparati con il vecchio modello (colonna `livello` con 1 - Base, 2 - Intermedio, 3 - Avanzato) sono ancora accettati e finiscono in "Per iniziare".
 
 ## Regole del gioco
 
@@ -35,7 +49,7 @@ Per rendere un sondaggio visibile a tutti va aggiunto a `cheatsheet.html` nel re
 
 ### Come compilare il foglio
 
-Compila una copia di `fogli/modello-sondaggio.xlsx` (un file = un sondaggio da 10 righe; istruzioni nel foglio "Istruzioni").
+Compila una copia di `fogli/modello-sondaggio.xlsx` (un file = un sondaggio da 10 righe; istruzioni nel foglio "Istruzioni"), scegliendo il contenitore dal menu a tendina.
 Nella colonna `domanda` scrivi gli indizi come `{{parola}}` e, solo nella riga P, le 9 parole oscurate come `[[parola]]`.
 
 ## Pubblicazione su GitHub Pages
