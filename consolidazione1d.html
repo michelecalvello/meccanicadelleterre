@@ -34,6 +34,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1
 .wrap{max-width:1440px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px;display:grid;gap:22px}
 header.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px}
 header.top .brand{flex:1 1 420px}
+.topbar{display:flex;justify-content:flex-end;margin-bottom:-14px}
 .brand h1{font-family:var(--f-display);font-weight:800;font-stretch:125%;font-size:clamp(28px,5vw,44px);line-height:1.02;margin:4px 0 0;letter-spacing:-.01em;text-wrap:balance}
 .brand h1 span{color:var(--water)}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:15px;max-width:62ch}
@@ -113,6 +114,9 @@ sub,sup{line-height:0}
 <body>
 <div class="wrap">
 
+<div class="topbar">
+  <div class="seg" role="group" aria-label="Tema di visualizzazione"><button type="button" data-th="auto">Automatico</button><button type="button" data-th="light">Chiaro</button><button type="button" data-th="dark">Scuro</button></div>
+</div>
 <header class="top">
   <div class="brand">
     <span class="mono">Meccanica delle terre · Filtrazione e consolidazione</span>
@@ -125,14 +129,13 @@ sub,sup{line-height:0}
     <a href="#fd"><b>3</b>Carico graduale e strati</a>
     <a href="#modello">Il modello</a>
   </nav>
-  <div class="seg" role="group" aria-label="Tema di visualizzazione"><button type="button" data-th="auto">Automatico</button><button type="button" data-th="light">Chiaro</button><button type="button" data-th="dark">Scuro</button></div>
 </header>
 
 
 <!-- 1 · Terzaghi -->
 <section class="card dense" id="terzaghi">
   <h2><span class="n">1</span>Isocrone, flusso, deformazioni e cedimenti</h2>
-  <p class="wide">Tutti i grafici si riferiscono allo stesso istante <var>t</var>. I cursori agiscono su <var>k</var> e <var>m</var><sub>v</sub>, e c<sub>v</sub> ne è una conseguenza. Il tempo scorre in scala logaritmica, da un giorno a cento anni.</p>
+  <p class="wide">Tutti i grafici si riferiscono allo stesso istante <var>t</var>. I cursori agiscono su <var>k</var> e <var>m</var><sub>v</sub>, e c<sub>v</sub> ne è una conseguenza. All'estremo sinistro del cursore del tempo c'è la condizione iniziale (t = 0); poi il tempo scorre in scala logaritmica, da un giorno a cento anni.</p>
   <div class="ctl tight">
     <div class="f"><label for="aK">Permeabilità k <output id="aKo"></output></label><input type="range" id="aK" min="-11" max="-7" step="0.05" value="-9"></div>
     <div class="f"><label for="aMv">Compressibilità m<sub>v</sub> <output id="aMvo"></output></label><input type="range" id="aMv" min="-5" max="-3" step="0.05" value="-3.7"></div>
@@ -140,15 +143,15 @@ sub,sup{line-height:0}
     <div class="f"><label for="aS">Carico Δσ (max) <output id="aSo"></output></label><input type="range" id="aS" min="20" max="200" step="10" value="100"></div>
     <div class="f"><label for="aDr">Drenaggio</label><select id="aDr"><option value="2">Doppio (sopra e sotto)</option><option value="1">Singolo (base impermeabile)</option></select></div>
     <div class="f"><label for="aSh">Distribuzione iniziale di u<sub>0</sub></label><select id="aSh"><option value="uni">Uniforme (carico esteso)</option><option value="dec">Triangolare, decresce con z (impronta limitata)</option><option value="inc">Triangolare, cresce con z (peso proprio)</option><option value="trap">Trapezia</option></select></div>
-    <div class="f full"><label for="aT">Tempo dall'applicazione del carico <output id="aTo"></output></label><div class="trow"><input type="range" id="aT" min="0" max="4.5626" step="0.002" value="1.6"><button class="btn" id="aPlay" type="button"></button></div></div>
+    <div class="f full"><label for="aT">Tempo dall'applicazione del carico <output id="aTo"></output></label><div class="trow"><input type="range" id="aT" min="-0.1" max="4.5626" step="0.002" value="1.6"><button class="btn" id="aPlay" type="button"></button></div></div>
   </div>
   <div class="mets tight">
     <div class="met"><span>c<sub>v</sub> = k/(m<sub>v</sub>γ<sub>w</sub>)</span><b id="mCv"></b></div>
     <div class="met"><span>Fattore tempo T<sub>v</sub></span><b id="mTv"></b></div>
     <div class="met"><span>Consolidazione media U</span><b id="mU"></b></div>
     <div class="met"><span>Cedimento s(t) / s<sub>∞</sub></span><b id="mS"></b></div>
-    <div class="met"><span>t<sub>50</sub> / t<sub>90</sub></span><b id="mT9"></b></div>
-    <div class="met"><span>Velocità max v</span><b id="mV"></b></div>
+    <div class="met"><span>t<sub>50</sub> (U = 50%)</span><b id="mT5"></b></div>
+    <div class="met"><span>t<sub>90</sub> (U = 90%)</span><b id="mT9"></b></div>
     <div class="met"><span>Portata uscente q</span><b id="mQ"></b></div>
     <div class="met"><span>Cedimento ds/dt</span><b id="mDs"></b></div>
   </div>
@@ -438,7 +441,7 @@ function dragPick(c,fn){c.addEventListener('pointerdown',e=>{fn(e);c.setPointerC
 const A={mode:'log'};let AC=null,ACkey='',ATv=null;
 function readA(){
   A.k=Math.pow(10,+$('aK').value);A.mv=Math.pow(10,+$('aMv').value);A.D=+$('aD').value;A.ds=+$('aS').value;
-  A.dbl=$('aDr').value==='2';A.shape=$('aSh').value;A.days=Math.pow(10,+$('aT').value);
+  A.dbl=$('aDr').value==='2';A.shape=$('aSh').value;A.days=+$('aT').value<0?0:Math.pow(10,+$('aT').value);
   const key=A.shape+A.dbl;if(key!==ACkey){AC=coeffs(A.shape,A.dbl);ACkey=key;ATv={t50:TvFor(AC,.5),t90:TvFor(AC,.9),t97:TvFor(AC,.97)};}
   A.Hd=A.dbl?A.D/2:A.D;A.cv=A.k/(A.mv*GW);A.TvOf=d=>A.cv*d*DAY/(A.Hd*A.Hd);A.Tv=A.TvOf(A.days);
   A.U=Uavg(AC,A.Tv);A.sinf=A.mv*A.ds*A.D*AC.mean;
@@ -446,15 +449,15 @@ function readA(){
 const aU=(z,Tv)=>uR(AC,z/A.Hd,Tv);
 function drawA(){
   readA();
-  $('aKo').innerHTML=sci(A.k)+' m/s';$('aMvo').innerHTML=fp(A.mv*1000,3)+' MPa<sup>−1</sup>';$('aDo').textContent=fx(A.D,1)+' m';$('aSo').textContent=A.ds+' kPa';$('aTo').textContent=fT(A.days);
-  $('mCv').textContent=cvY(A.cv);$('mTv').textContent=A.Tv<0.001?A.Tv.toExponential(1).replace('.',','):fp(A.Tv,3);$('mU').textContent=fx(A.U*100,1)+' %';
+  $('aKo').innerHTML=sci(A.k)+' m/s';$('aMvo').innerHTML=fx(A.mv*1000,2)+' MPa<sup>−1</sup>';$('aDo').textContent=fx(A.D,1)+' m';$('aSo').textContent=A.ds+' kPa';$('aTo').textContent=A.days===0?'0 (condizione iniziale)':fT(A.days);
+  $('mCv').innerHTML=sci(A.cv,2)+' m²/s';$('mTv').innerHTML=A.Tv===0?'0':A.Tv<0.001?sci(A.Tv,2):fx(A.Tv,3);$('mU').textContent=fx(A.U*100,1)+' %';
   $('mS').textContent=fx(A.U*A.sinf*100,1)+' / '+fx(A.sinf*100,1)+' cm';
-  const H2=A.Hd*A.Hd;$('mT9').textContent=fT(ATv.t50*H2/A.cv/DAY)+' / '+fT(ATv.t90*H2/A.cv/DAY);
+  const H2=A.Hd*A.Hd;$('mT5').textContent=fT(ATv.t50*H2/A.cv/DAY);$('mT9').textContent=fT(ATv.t90*H2/A.cv/DAY);
   /* colonna */
-  const vmA=drawColumn($('aCol'),{D:A.D,uAt:z=>aU(z,A.Tv),vAt:z=>-(A.k/GW)*A.ds*dUdZ(AC,z/A.Hd,A.Tv)/A.Hd,top:true,bot:A.dbl,base:()=>T.sand,load:'Δσ = '+A.ds+' kPa'});
+  const vmA=drawColumn($('aCol'),{D:A.D,uAt:z=>aU(z,A.Tv),vAt:z=>A.Tv>0?-(A.k/GW)*A.ds*dUdZ(AC,z/A.Hd,A.Tv)/A.Hd:0,top:true,bot:A.dbl,base:()=>T.sand,load:'Δσ = '+A.ds+' kPa'});
   /* bilancio di massa */
   const q=(A.k/GW)*A.ds*gradB(AC,A.Tv)/A.Hd, sdot=A.sinf*dUdT(AC,A.Tv)*A.cv/H2;
-  $('mV').textContent=fp(vmA*DAY*1000,3)+' mm/g';$('mQ').textContent=fp(q*DAY*1000,3)+' mm/g';$('mDs').textContent=fp(sdot*DAY*1000,3)+' mm/g';
+  if(A.Tv>0){$('mQ').textContent=fp(q*DAY*1000,3)+' mm/g';$('mDs').textContent=fp(sdot*DAY*1000,3)+' mm/g';}else{$('mQ').textContent='0';$('mDs').textContent='0';}
   /* isocrone */
   {const c=$('aIso');const [X,w,h]=prep(c);const o={l:46,r:w-10,t:12,b:h-40,H:h,xr:[0,1],yr:[0,A.D],xt:ticksN(0,1,4),yt:ticksN(0,A.D,5),xl:'u / Δσ',yl:'z (m)'};const {px,py}=frame(X,o);
     clip(X,o);const N=140,zs=[...Array(N+1)].map((_,i)=>i/N*A.D);
@@ -488,12 +491,12 @@ function drawASet(){
   const H2=A.Hd*A.Hd;
   [[ATv.t50,.5,'t50'],[ATv.t90,.9,'t90']].forEach(([Tv,U,lab])=>{const d=Tv*H2/A.cv/DAY;const xv=toX(d);if(xv<o.xr[0]||xv>o.xr[1])return;const x=px(xv),y=py(U*A.sinf*100);X.strokeStyle=T.muted;X.lineWidth=1;X.setLineDash([3,3]);line(X,[[x,o.t],[x,y]]);line(X,[[o.l,y],[x,y]]);X.setLineDash([]);X.fillStyle=T.muted;X.font='11.5px '+MONO;X.textAlign='left';X.textBaseline='top';X.fillText(lab,x+4,o.t+4);});
   X.restore();
-  const xv=toX(A.days);if(xv>=o.xr[0]&&xv<=o.xr[1]){X.fillStyle=T.ochre;X.beginPath();X.arc(px(xv),py(A.U*A.sinf*100),6,0,7);X.fill();}
+  const xv=A.days===0?o.xr[0]:toX(A.days);if(xv>=o.xr[0]&&xv<=o.xr[1]){X.fillStyle=T.ochre;X.beginPath();X.arc(px(xv),py(A.U*A.sinf*100),6,0,7);X.fill();}
 }
 ['aK','aMv','aD','aS','aDr','aSh','aT'].forEach(id=>$(id).addEventListener('input',drawA));
 $('aLog').onclick=()=>{A.mode='log';$('aLog').setAttribute('aria-pressed','true');$('aSqrt').setAttribute('aria-pressed','false');drawASet();};
 $('aSqrt').onclick=()=>{A.mode='sqrt';$('aSqrt').setAttribute('aria-pressed','true');$('aLog').setAttribute('aria-pressed','false');drawASet();};
-dragPick($('aSet'),e=>{const c=$('aSet'),r=c.getBoundingClientRect();const o=aSetFrame(r.width,r.height);const xv=o.xr[0]+(e.clientX-r.left-o.l)/(o.r-o.l)*(o.xr[1]-o.xr[0]);const d=A.mode==='log'?Math.pow(10,xv):xv*xv;$('aT').value=clamp(Math.log10(Math.max(d,1)),0,TMAX);drawA();});
+dragPick($('aSet'),e=>{const c=$('aSet'),r=c.getBoundingClientRect();const o=aSetFrame(r.width,r.height);const xv=o.xr[0]+(e.clientX-r.left-o.l)/(o.r-o.l)*(o.xr[1]-o.xr[0]);const d=A.mode==='log'?Math.pow(10,xv):xv*xv;$('aT').value=d<1?-0.1:clamp(Math.log10(d),0,TMAX);drawA();});
 player($('aPlay'),$('aT'),drawA);
 
 /* =========================================================
