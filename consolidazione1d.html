@@ -423,7 +423,7 @@ function drawColumn(c,o){
     X.fillStyle=alpha(T.water,.35);X.fillRect(x-2.6,top,5.2,yp-top);
     X.fillStyle=T.water;const wh=hh*u;X.fillRect(x-2.6,top-wh,5.2,wh);X.beginPath();X.arc(x,yp,3.2,0,7);X.fill();});
   X.strokeStyle=T.muted;X.lineWidth=1;X.setLineDash([3,3]);line(X,[[L,top-.5],[R,top-.5]]);X.setLineDash([]);
-  X.fillStyle=T.muted;X.font='11.5px '+FONT;X.textAlign='left';X.fillText('Δh = u/γw',L,top-6);
+  X.fillStyle=T.muted;X.font='11.5px '+FONT;X.textAlign='left';X.fillText('Δh = u/γw',L,top-22);
   return vmax;
 }
 function tag(X,txt,x,y,col){X.font='12px '+MONO;X.textBaseline='top';const w=X.measureText(txt).width;const x0=X.textAlign==='right'?x-w:x;X.fillStyle=alpha(T.paper,.88);X.fillRect(x0-3,y-2,w+6,17);X.fillStyle=col;X.fillText(txt,x,y);}
