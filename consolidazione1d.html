@@ -31,8 +31,9 @@ body{margin:0}
   --good:#7CCB86; --bad:#F08A7C;
   --sand:#6B5D3E; --silt:#4F4E42; --clay:#3D372D; color-scheme:dark}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
-.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px;display:grid;gap:22px}
+.wrap{max-width:1440px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px;display:grid;gap:22px}
 header.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px}
+header.top .brand{flex:1 1 420px}
 .brand h1{font-family:var(--f-display);font-weight:800;font-stretch:125%;font-size:clamp(28px,5vw,44px);line-height:1.02;margin:4px 0 0;letter-spacing:-.01em;text-wrap:balance}
 .brand h1 span{color:var(--water)}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:15px;max-width:62ch}
@@ -45,7 +46,7 @@ nav.toc a b{font-family:var(--f-mono);color:var(--water);margin-right:6px;font-s
 .card>h2{margin:0;font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:clamp(21px,2.6vw,26px)}
 .card>h2 .n{font-family:var(--f-mono);font-size:13px;color:var(--water);font-weight:600;margin-right:12px;vertical-align:middle}
 .card h3{margin:0;font-family:var(--f-display);font-stretch:112%;font-weight:500;font-size:18px}
-.prose{max-width:75ch}
+.prose{max-width:90ch}
 .prose p{margin:0 0 .7em}
 .prose p:last-child{margin-bottom:0}
 .eq{font-family:var(--f-mono);font-size:14.5px;background:var(--bg);border-left:3px solid var(--water);padding:8px 12px;margin:.4em 0 .8em;overflow-x:auto;white-space:nowrap}
@@ -91,6 +92,19 @@ figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.45}
 .legend i.d{border-top-style:dashed}
 .chk{font-size:14px;color:var(--muted);display:flex;gap:6px;align-items:center}
 .chk input{accent-color:var(--water)}
+.wide{margin:0;max-width:none}
+.card.dense{gap:12px;padding-top:18px;padding-bottom:18px}
+.card.dense .try ul{max-width:none}
+.ctl.tight{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:4px 22px}
+.ctl.tight .f.full{grid-column:1/-1}
+@media (min-width:1100px){.ctl.tight{grid-template-columns:repeat(6,minmax(0,1fr))}.mets.tight{grid-template-columns:repeat(8,minmax(0,1fr))}}
+.mets.tight{grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px}
+.mets.tight .met{padding:6px 10px}
+.mets.tight .met span{font-size:12px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mets.tight .met b{font-size:14.5px}
+.viz.tight figcaption{font-size:12.5px;margin-top:4px}
+.fighead h3 small{font-family:var(--f-body);font-size:12.5px;color:var(--muted);font-weight:400;margin-left:10px}
+.f.full{grid-column:1/-1}
 footer{color:var(--muted);font-size:14px;display:grid;gap:6px}
 footer a{color:var(--water)}
 sub,sup{line-height:0}
@@ -106,83 +120,56 @@ sub,sup{line-height:0}
     <p>Visualizzazioni interattive dell'equazione di Terzaghi: come si dissipano le sovrapressioni interstiziali, dove scorre l'acqua, come le deformazioni si sommano nel cedimento e come si ricava c<sub>v</sub> dalla prova edometrica.</p>
   </div>
   <nav class="toc" aria-label="Sezioni">
-    <a href="#modello"><b>0</b>Il modello</a>
     <a href="#terzaghi"><b>1</b>Isocrone e cedimenti</a>
     <a href="#edometro"><b>2</b>c<sub>v</sub> dall'edometro</a>
-    <a href="#fd">  <b>3</b>Carico graduale e strati</a>
+    <a href="#fd"><b>3</b>Carico graduale e strati</a>
+    <a href="#modello">Il modello</a>
   </nav>
+  <div class="seg" role="group" aria-label="Tema di visualizzazione"><button type="button" data-th="auto">Automatico</button><button type="button" data-th="light">Chiaro</button><button type="button" data-th="dark">Scuro</button></div>
 </header>
 
-<!-- 0 · Modello -->
-<section class="card" id="modello">
-  <h2><span class="n">0</span>Il modello di Terzaghi</h2>
-  <div class="theory">
-    <div class="prose">
-      <p>Uno strato di terreno saturo di spessore <var>D</var> riceve un incremento di tensione totale verticale Δσ. Subito dopo il carico l'acqua, molto meno compressibile dello scheletro solido, lo sostiene interamente: nasce una sovrapressione interstiziale <var>u</var><sub>0</sub> = Δσ. Nel tempo l'acqua filtra verso i contorni drenanti, la sovrapressione si dissipa e il carico passa allo scheletro come incremento di tensione efficace Δσ′ = Δσ − <var>u</var>.</p>
-      <p>Imponendo la continuità (l'acqua che esce da un elementino è pari alla sua variazione di volume) e usando la legge di Darcy si ottiene l'equazione della consolidazione:</p>
-      <div class="eq">∂u/∂t = c<sub>v</sub> · ∂²u/∂z²  &nbsp;&nbsp; con &nbsp; c<sub>v</sub> = k / (m<sub>v</sub> · γ<sub>w</sub>)</div>
-      <p>Con il fattore tempo <var>T</var><sub>v</sub> = c<sub>v</sub>·t / H<sub>d</sub>², dove H<sub>d</sub> è il percorso di drenaggio (metà spessore con drenaggio doppio, l'intero spessore con drenaggio singolo), la soluzione dipende solo da <var>T</var><sub>v</sub> e da z/H<sub>d</sub>:</p>
-      <div class="eq">u(z,t) = Σ A<sub>n</sub> · sin(λ<sub>n</sub> z/H<sub>d</sub>) · exp(−λ<sub>n</sub>² T<sub>v</sub>) &nbsp;&nbsp; uniforme: A<sub>n</sub> = 2Δσ/M, M = (2m+1)π/2</div>
-    </div>
-    <div class="prose">
-      <h3>Ipotesi</h3>
-      <ul>
-        <li>terreno saturo, acqua e granuli incompressibili;</li>
-        <li>flusso e deformazioni solo verticali;</li>
-        <li>legge di Darcy valida, <var>k</var> e <var>m</var><sub>v</sub> costanti nel processo;</li>
-        <li>piccole deformazioni, carico applicato istantaneamente (tranne nella sezione 3).</li>
-      </ul>
-      <h3 style="margin-top:14px">Grandezze derivate</h3>
-      <ul>
-        <li>grado di consolidazione locale U<sub>z</sub> = 1 − u/u<sub>0</sub>;</li>
-        <li>deformazione ε(z,t) = m<sub>v</sub> · (u<sub>0</sub> − u);</li>
-        <li>cedimento s(t) = ∫ ε dz = U(T<sub>v</sub>) · s<sub>∞</sub>, con s<sub>∞</sub> = ∫ m<sub>v</sub> u<sub>0</sub> dz;</li>
-        <li>velocità di filtrazione v = k·i = −(k/γ<sub>w</sub>) · ∂u/∂z.</li>
-      </ul>
-    </div>
-  </div>
-</section>
 
 <!-- 1 · Terzaghi -->
-<section class="card" id="terzaghi">
+<section class="card dense" id="terzaghi">
   <h2><span class="n">1</span>Isocrone, flusso, deformazioni e cedimenti</h2>
-  <p class="prose" style="margin:0">Tutti i grafici di questa sezione si riferiscono allo stesso istante <var>t</var>. I cursori agiscono su <var>k</var> e <var>m</var><sub>v</sub>: c<sub>v</sub> ne è una conseguenza. Il tempo scorre in scala logaritmica, da un giorno a cento anni.</p>
-  <div class="ctl">
+  <p class="wide">Tutti i grafici si riferiscono allo stesso istante <var>t</var>. I cursori agiscono su <var>k</var> e <var>m</var><sub>v</sub>, e c<sub>v</sub> ne è una conseguenza. Il tempo scorre in scala logaritmica, da un giorno a cento anni.</p>
+  <div class="ctl tight">
     <div class="f"><label for="aK">Permeabilità k <output id="aKo"></output></label><input type="range" id="aK" min="-11" max="-7" step="0.05" value="-9"></div>
     <div class="f"><label for="aMv">Compressibilità m<sub>v</sub> <output id="aMvo"></output></label><input type="range" id="aMv" min="-5" max="-3" step="0.05" value="-3.7"></div>
     <div class="f"><label for="aD">Spessore dello strato D <output id="aDo"></output></label><input type="range" id="aD" min="1" max="12" step="0.5" value="4"></div>
-    <div class="f"><label for="aS">Carico Δσ (valore massimo) <output id="aSo"></output></label><input type="range" id="aS" min="20" max="200" step="10" value="100"></div>
+    <div class="f"><label for="aS">Carico Δσ (max) <output id="aSo"></output></label><input type="range" id="aS" min="20" max="200" step="10" value="100"></div>
     <div class="f"><label for="aDr">Drenaggio</label><select id="aDr"><option value="2">Doppio (sopra e sotto)</option><option value="1">Singolo (base impermeabile)</option></select></div>
     <div class="f"><label for="aSh">Distribuzione iniziale di u<sub>0</sub></label><select id="aSh"><option value="uni">Uniforme (carico esteso)</option><option value="dec">Triangolare, decresce con z (impronta limitata)</option><option value="inc">Triangolare, cresce con z (peso proprio)</option><option value="trap">Trapezia</option></select></div>
-    <div class="f" style="grid-column:1/-1"><label for="aT">Tempo dall'applicazione del carico <output id="aTo"></output></label><div class="trow"><input type="range" id="aT" min="0" max="4.5626" step="0.002" value="1.6"><button class="btn" id="aPlay" type="button"></button></div></div>
+    <div class="f full"><label for="aT">Tempo dall'applicazione del carico <output id="aTo"></output></label><div class="trow"><input type="range" id="aT" min="0" max="4.5626" step="0.002" value="1.6"><button class="btn" id="aPlay" type="button"></button></div></div>
   </div>
-  <div class="mets">
+  <div class="mets tight">
     <div class="met"><span>c<sub>v</sub> = k/(m<sub>v</sub>γ<sub>w</sub>)</span><b id="mCv"></b></div>
     <div class="met"><span>Fattore tempo T<sub>v</sub></span><b id="mTv"></b></div>
-    <div class="met"><span>Grado di consolidazione U</span><b id="mU"></b></div>
+    <div class="met"><span>Consolidazione media U</span><b id="mU"></b></div>
     <div class="met"><span>Cedimento s(t) / s<sub>∞</sub></span><b id="mS"></b></div>
     <div class="met"><span>t<sub>50</sub> / t<sub>90</sub></span><b id="mT9"></b></div>
+    <div class="met"><span>Velocità max v</span><b id="mV"></b></div>
+    <div class="met"><span>Portata uscente q</span><b id="mQ"></b></div>
+    <div class="met"><span>Cedimento ds/dt</span><b id="mDs"></b></div>
   </div>
-  <div class="viz">
+  <div class="viz tight">
     <figure>
-      <canvas id="aCol" style="height:360px" role="img" aria-label="Colonna di terreno con sovrapressioni, piezometri e frecce di flusso"></canvas>
-      <figcaption>Colore e piezometri: sovrapressione u. Frecce: velocità di Darcy. Striscia puntinata: contorno drenante; striscia tratteggiata: contorno impermeabile.</figcaption>
-      <div class="balance" id="aBal"></div>
+      <canvas id="aCol" style="height:245px" role="img" aria-label="Colonna di terreno con sovrapressioni, piezometri e frecce di flusso"></canvas>
+      <figcaption>Colore e piezometri: u. Frecce: velocità v. Puntinato: drenante; tratteggiato: impermeabile.</figcaption>
     </figure>
     <figure>
-      <canvas id="aIso" style="height:360px" role="img" aria-label="Isocrone delle sovrapressioni interstiziali"></canvas>
-      <figcaption>Isocrone u/Δσ. In grigio quelle di riferimento (valori di T<sub>v</sub>), tratteggiata la distribuzione iniziale, in colore quella attuale. L'area verde è la sovrapressione già dissipata.</figcaption>
+      <canvas id="aIso" style="height:245px" role="img" aria-label="Isocrone delle sovrapressioni interstiziali"></canvas>
+      <figcaption>Isocrone u/Δσ: in grigio quelle di riferimento (valori di T<sub>v</sub>), tratteggiata u<sub>0</sub>, in colore l'attuale. Verde: sovrapressione dissipata.</figcaption>
     </figure>
     <figure>
-      <canvas id="aEps" style="height:360px" role="img" aria-label="Profilo delle deformazioni verticali"></canvas>
-      <figcaption>Deformazione verticale ε(z,t) = m<sub>v</sub>(u<sub>0</sub> − u). Tratteggiata la deformazione finale. L'area sotto la curva è il cedimento.</figcaption>
+      <canvas id="aEps" style="height:245px" role="img" aria-label="Profilo delle deformazioni verticali"></canvas>
+      <figcaption>Deformazione ε(z,t) = m<sub>v</sub>(u<sub>0</sub> − u); tratteggiata quella finale. L'area verde è il cedimento s(t).</figcaption>
     </figure>
   </div>
   <figure>
-    <div class="fighead"><h3>Cedimento nel tempo</h3>
+    <div class="fighead"><h3>Cedimento nel tempo <small>clicca o trascina sulla curva per scegliere l'istante</small></h3>
       <div class="seg" role="group" aria-label="Scala dei tempi"><button type="button" id="aLog" aria-pressed="true">log t</button><button type="button" id="aSqrt" aria-pressed="false">√t</button></div></div>
-    <canvas id="aSet" style="height:230px;cursor:pointer" role="img" aria-label="Curva cedimento-tempo"></canvas>
-    <figcaption>Clicca o trascina sulla curva per scegliere l'istante. In scala log t la curva ha la forma a S usata da Casagrande, in scala √t il tratto iniziale rettilineo usato da Taylor.</figcaption>
+    <canvas id="aSet" style="height:155px;cursor:pointer" role="img" aria-label="Curva cedimento-tempo"></canvas>
   </figure>
   <div class="try">
     <b class="mono">Da provare</b>
@@ -190,7 +177,8 @@ sub,sup{line-height:0}
       <li>Cambia solo <var>k</var>: le isocrone restano le stesse (dipendono solo da T<sub>v</sub>), cambia l'istante in cui si raggiungono. La curva dei cedimenti trasla in orizzontale e s<sub>∞</sub> non cambia.</li>
       <li>Cambia solo <var>m</var><sub>v</sub>: s<sub>∞</sub> cresce e il processo rallenta, perché c<sub>v</sub> diminuisce. Due terreni con lo stesso rapporto k/m<sub>v</sub> si consolidano con gli stessi tempi.</li>
       <li>Passa da drenaggio doppio a singolo: H<sub>d</sub> raddoppia e t<sub>90</sub> diventa quattro volte più lungo.</li>
-      <li>Osserva le frecce: all'inizio il flusso è concentrato vicino ai contorni drenanti, alla base impermeabile la velocità è sempre nulla. Sotto la colonna, la portata d'acqua che esce coincide con la velocità di cedimento.</li>
+      <li>Osserva le frecce: all'inizio il flusso è concentrato vicino ai contorni drenanti, alla base impermeabile la velocità è sempre nulla. La portata d'acqua uscente q coincide sempre con la velocità di cedimento ds/dt.</li>
+      <li>In scala log t la curva dei cedimenti ha la forma a S usata da Casagrande, in scala √t il tratto iniziale rettilineo usato da Taylor (vedi la sezione 2).</li>
       <li>Con la distribuzione triangolare crescente e drenaggio singolo, all'inizio quasi nulla cambia: un profilo lineare che si annulla sul contorno drenante è già "in equilibrio" finché il fondo non si fa sentire.</li>
     </ul>
   </div>
@@ -280,6 +268,36 @@ sub,sup{line-height:0}
       <li>Rendi lo strato superiore molto permeabile e poco compressibile: si comporta quasi come uno strato drenante e il percorso di drenaggio effettivo si accorcia.</li>
       <li>Metti l'argilla meno permeabile sopra e scegli "solo in superficie": l'acqua dello strato inferiore deve attraversarla, e l'isocrona mostra un brusco cambio di pendenza all'interfaccia (lì la portata, k·i, è continua, il gradiente no).</li>
     </ul>
+  </div>
+</section>
+
+<!-- Il modello -->
+<section class="card" id="modello">
+  <h2>Il modello</h2>
+  <div class="theory">
+    <div class="prose">
+      <p>Uno strato di terreno saturo di spessore <var>D</var> riceve un incremento di tensione totale verticale Δσ. Subito dopo il carico l'acqua, molto meno compressibile dello scheletro solido, lo sostiene interamente: nasce una sovrapressione interstiziale <var>u</var><sub>0</sub> = Δσ. Nel tempo l'acqua filtra verso i contorni drenanti, la sovrapressione si dissipa e il carico passa allo scheletro come incremento di tensione efficace Δσ′ = Δσ − <var>u</var>.</p>
+      <p>Imponendo la continuità (l'acqua che esce da un elementino è pari alla sua variazione di volume) e usando la legge di Darcy si ottiene l'equazione della consolidazione:</p>
+      <div class="eq">∂u/∂t = c<sub>v</sub> · ∂²u/∂z²  &nbsp;&nbsp; con &nbsp; c<sub>v</sub> = k / (m<sub>v</sub> · γ<sub>w</sub>)</div>
+      <p>Con il fattore tempo <var>T</var><sub>v</sub> = c<sub>v</sub>·t / H<sub>d</sub>², dove H<sub>d</sub> è il percorso di drenaggio (metà spessore con drenaggio doppio, l'intero spessore con drenaggio singolo), la soluzione dipende solo da <var>T</var><sub>v</sub> e da z/H<sub>d</sub>:</p>
+      <div class="eq">u(z,t) = Σ A<sub>n</sub> · sin(λ<sub>n</sub> z/H<sub>d</sub>) · exp(−λ<sub>n</sub>² T<sub>v</sub>) &nbsp;&nbsp; uniforme: A<sub>n</sub> = 2Δσ/M, M = (2m+1)π/2</div>
+    </div>
+    <div class="prose">
+      <h3>Ipotesi</h3>
+      <ul>
+        <li>terreno saturo, acqua e granuli incompressibili;</li>
+        <li>flusso e deformazioni solo verticali;</li>
+        <li>legge di Darcy valida, <var>k</var> e <var>m</var><sub>v</sub> costanti nel processo;</li>
+        <li>piccole deformazioni, carico applicato istantaneamente (tranne nella sezione 3).</li>
+      </ul>
+      <h3 style="margin-top:14px">Grandezze derivate</h3>
+      <ul>
+        <li>grado di consolidazione locale U<sub>z</sub> = 1 − u/u<sub>0</sub>;</li>
+        <li>deformazione ε(z,t) = m<sub>v</sub> · (u<sub>0</sub> − u);</li>
+        <li>cedimento s(t) = ∫ ε dz = U(T<sub>v</sub>) · s<sub>∞</sub>, con s<sub>∞</sub> = ∫ m<sub>v</sub> u<sub>0</sub> dz;</li>
+        <li>velocità di filtrazione v = k·i = −(k/γ<sub>w</sub>) · ∂u/∂z.</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -436,7 +454,7 @@ function drawA(){
   const vmA=drawColumn($('aCol'),{D:A.D,uAt:z=>aU(z,A.Tv),vAt:z=>-(A.k/GW)*A.ds*dUdZ(AC,z/A.Hd,A.Tv)/A.Hd,top:true,bot:A.dbl,base:()=>T.sand,load:'Δσ = '+A.ds+' kPa'});
   /* bilancio di massa */
   const q=(A.k/GW)*A.ds*gradB(AC,A.Tv)/A.Hd, sdot=A.sinf*dUdT(AC,A.Tv)*A.cv/H2;
-  $('aBal').innerHTML='Velocità massima v = '+fp(vmA*DAY*1000,3)+' mm/g<br>Portata uscente q = '+fp(q*DAY*1000,3)+' mm/g<br>Velocità di cedimento ds/dt = '+fp(sdot*DAY*1000,3)+' mm/g';
+  $('mV').textContent=fp(vmA*DAY*1000,3)+' mm/g';$('mQ').textContent=fp(q*DAY*1000,3)+' mm/g';$('mDs').textContent=fp(sdot*DAY*1000,3)+' mm/g';
   /* isocrone */
   {const c=$('aIso');const [X,w,h]=prep(c);const o={l:46,r:w-10,t:12,b:h-40,H:h,xr:[0,1],yr:[0,A.D],xt:ticksN(0,1,4),yt:ticksN(0,A.D,5),xl:'u / Δσ',yl:'z (m)'};const {px,py}=frame(X,o);
     clip(X,o);const N=140,zs=[...Array(N+1)].map((_,i)=>i/N*A.D);
@@ -660,6 +678,13 @@ player($('fPlay'),$('fT'),drawF);
 
 /* ---------- avvio ---------- */
 function all(){theme();drawA();drawE();drawF();}
+function setTheme(m,save){const r=document.documentElement;if(m==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',m);
+  document.querySelectorAll('[data-th]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.th===m)));
+  if(save){try{localStorage.setItem('mdt-tema',m);}catch(e){}}all();}
+document.querySelectorAll('[data-th]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.th,true)));
+let tema0='auto';try{tema0=localStorage.getItem('mdt-tema')||'auto';}catch(e){}
+document.querySelectorAll('[data-th]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.th===tema0)));
+if(tema0!=='auto')document.documentElement.setAttribute('data-theme',tema0);
 newSpecimen();
 let rz;window.addEventListener('resize',()=>{cancelAnimationFrame(rz);rz=requestAnimationFrame(all);});
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',all);
