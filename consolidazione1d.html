@@ -115,7 +115,7 @@ sub,sup{line-height:0}
 <div class="wrap">
 
 <div class="topbar">
-  <div class="seg" role="group" aria-label="Tema di visualizzazione"><button type="button" data-th="auto">Automatico</button><button type="button" data-th="light">Chiaro</button><button type="button" data-th="dark">Scuro</button></div>
+  <div class="seg" role="group" aria-label="Tema di visualizzazione"><button type="button" data-th="light">Chiaro</button><button type="button" data-th="dark">Scuro</button></div>
 </div>
 <header class="top">
   <div class="brand">
@@ -135,7 +135,7 @@ sub,sup{line-height:0}
 <!-- 1 · Terzaghi -->
 <section class="card dense" id="terzaghi">
   <h2><span class="n">1</span>Isocrone, flusso, deformazioni e cedimenti</h2>
-  <p class="wide">Tutti i grafici si riferiscono allo stesso istante <var>t</var>. I cursori agiscono su <var>k</var> e <var>m</var><sub>v</sub>, e c<sub>v</sub> ne è una conseguenza. All'estremo sinistro del cursore del tempo c'è la condizione iniziale (t = 0); poi il tempo scorre in scala logaritmica, da un giorno a cento anni.</p>
+  <p class="wide">Tutti i grafici si riferiscono allo stesso istante <var>t</var>. All'estremo sinistro del cursore del tempo c'è la condizione iniziale (t = 0); poi il tempo scorre in scala logaritmica, da un giorno a cento anni.</p>
   <div class="ctl tight">
     <div class="f"><label for="aK">Permeabilità k <output id="aKo"></output></label><input type="range" id="aK" min="-11" max="-7" step="0.05" value="-9"></div>
     <div class="f"><label for="aMv">Compressibilità m<sub>v</sub> <output id="aMvo"></output></label><input type="range" id="aMv" min="-5" max="-3" step="0.05" value="-3.7"></div>
@@ -143,7 +143,7 @@ sub,sup{line-height:0}
     <div class="f"><label for="aS">Carico Δσ (max) <output id="aSo"></output></label><input type="range" id="aS" min="20" max="200" step="10" value="100"></div>
     <div class="f"><label for="aDr">Drenaggio</label><select id="aDr"><option value="2">Doppio (sopra e sotto)</option><option value="1">Singolo (base impermeabile)</option></select></div>
     <div class="f"><label for="aSh">Distribuzione iniziale di u<sub>0</sub></label><select id="aSh"><option value="uni">Uniforme (carico esteso)</option><option value="dec">Triangolare, decresce con z (impronta limitata)</option><option value="inc">Triangolare, cresce con z (peso proprio)</option><option value="trap">Trapezia</option></select></div>
-    <div class="f full"><label for="aT">Tempo dall'applicazione del carico <output id="aTo"></output></label><div class="trow"><input type="range" id="aT" min="-0.1" max="4.5626" step="0.002" value="1.6"><button class="btn" id="aPlay" type="button"></button></div></div>
+    <div class="f full"><label for="aT">Tempo dall'applicazione del carico <output id="aTo"></output></label><div class="trow"><input type="range" id="aT" min="-0.1" max="4.5626" step="0.002" value="-0.1"><button class="btn" id="aPlay" type="button"></button></div></div>
   </div>
   <div class="mets tight">
     <div class="met"><span>c<sub>v</sub> = k/(m<sub>v</sub>γ<sub>w</sub>)</span><b id="mCv"></b></div>
@@ -305,8 +305,8 @@ sub,sup{line-height:0}
 </section>
 
 <footer>
-  <div>Riferimenti: Terzaghi K. (1943) <i>Theoretical Soil Mechanics</i>, Wiley · Taylor D.W. (1948) <i>Fundamentals of Soil Mechanics</i>, Wiley · Casagrande A., Fadum R.E. (1940) <i>Notes on soil testing for engineering purposes</i>, Harvard University · Berardi R., <i>Fondamenti di geotecnica</i>, Città Studi Edizioni.</div>
-  <div>Parte del materiale didattico di <a href="cheatsheet.html">Meccanica delle terre</a>. Valori numerici con la virgola decimale; γ<sub>w</sub> = 9,81 kN/m³.</div>
+  <div>Riferimenti: Terzaghi K. (1943) <i>Theoretical Soil Mechanics</i>, Wiley · Taylor D.W. (1948) <i>Fundamentals of Soil Mechanics</i>, Wiley · Berardi R., <i>Fondamenti di geotecnica</i>, Città Studi Edizioni.</div>
+  <div>γ<sub>w</sub> = 9,81 kN/m³.</div>
 </footer>
 </div>
 
@@ -681,16 +681,19 @@ player($('fPlay'),$('fT'),drawF);
 
 /* ---------- avvio ---------- */
 function all(){theme();drawA();drawE();drawF();}
-function setTheme(m,save){const r=document.documentElement;if(m==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',m);
+function setTheme(m,save){document.documentElement.setAttribute('data-theme',m);
   document.querySelectorAll('[data-th]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.th===m)));
   if(save){try{localStorage.setItem('mdt-tema',m);}catch(e){}}all();}
 document.querySelectorAll('[data-th]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.th,true)));
-let tema0='auto';try{tema0=localStorage.getItem('mdt-tema')||'auto';}catch(e){}
+const mqDark=window.matchMedia('(prefers-color-scheme: dark)');
+let temaSalvato=null;try{temaSalvato=localStorage.getItem('mdt-tema');}catch(e){}
+if(temaSalvato!=='light'&&temaSalvato!=='dark')temaSalvato=null;
+const tema0=temaSalvato||(mqDark.matches?'dark':'light');
 document.querySelectorAll('[data-th]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.th===tema0)));
-if(tema0!=='auto')document.documentElement.setAttribute('data-theme',tema0);
+document.documentElement.setAttribute('data-theme',tema0);
 newSpecimen();
 let rz;window.addEventListener('resize',()=>{cancelAnimationFrame(rz);rz=requestAnimationFrame(all);});
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',all);
+mqDark.addEventListener('change',e=>{let s_=null;try{s_=localStorage.getItem('mdt-tema');}catch(_){}if(s_!=='light'&&s_!=='dark')setTheme(e.matches?'dark':'light',false);});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(all);
 all();
 </script>
