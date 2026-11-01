@@ -4,11 +4,14 @@ Gioco didattico a indizi annidati sugli argomenti di meccanica delle terre, ispi
 
 Pagina del gioco: https://michelecalvello.github.io/meccanicadelleterre/cheatsheet.html
 
+Visualizzazioni interattive sulla consolidazione monodimensionale: https://michelecalvello.github.io/meccanicadelleterre/consolidazione1d.html
+
 ## Contenuto del repository
 
 | Percorso | Descrizione |
 |---|---|
 | `cheatsheet.html` | Il gioco: una sola pagina HTML, senza dipendenze da installare |
+| `consolidazione1d.html` | Consolidazione monodimensionale di Terzaghi: isocrone, flusso, deformazioni e cedimenti; c<sub>v</sub> dalla prova edometrica (Casagrande e Taylor); carico graduale e terreno stratificato alle differenze finite |
 | `fogli/modello-sondaggio.xlsx` | Modello vuoto per scrivere un nuovo sondaggio |
 | `fogli/sondaggio-per-iniziare-terreni-saturi.xlsx` | "Terreni saturi" (Per iniziare) |
 | `fogli/sondaggio-per-iniziare-compressibilita.xlsx` | "Compressibilità" (Per iniziare) |
