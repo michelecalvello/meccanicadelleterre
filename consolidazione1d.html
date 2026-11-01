@@ -95,7 +95,7 @@ figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.45}
 .chk input{accent-color:var(--water)}
 .wide{margin:0;max-width:none}
 .card.dense{gap:12px;padding-top:18px;padding-bottom:18px}
-.card.dense .try ul{max-width:none}
+.card.dense .try ul,#edometro .try ul{max-width:none}
 .ctl.tight{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:4px 22px}
 .ctl.tight .f.full{grid-column:1/-1}
 @media (min-width:1100px){.ctl.tight{grid-template-columns:repeat(6,minmax(0,1fr))}.mets.tight{grid-template-columns:repeat(8,minmax(0,1fr))}}
@@ -190,10 +190,10 @@ sub,sup{line-height:0}
 <!-- 2 · Edometro -->
 <section class="card" id="edometro">
   <h2><span class="n">2</span>Ricavare c<sub>v</sub> dalla prova edometrica</h2>
-  <p class="prose" style="margin:0">Le letture del comparatore di un gradino di carico su un provino alto 20 mm, drenato sopra e sotto (H<sub>d</sub> = 10 mm), sono generate con la teoria di Terzaghi più una compressione iniziale, una compressione secondaria e un piccolo errore di lettura. Il c<sub>v</sub> "vero" è nascosto: ricavalo con le costruzioni di Casagrande e di Taylor e confronta i risultati.</p>
+  <p class="wide">Le letture del comparatore di un gradino di carico su un provino alto 20 mm, drenato sopra e sotto (H<sub>d</sub> = 10 mm), sono generate con la teoria di Terzaghi più una compressione iniziale, una compressione secondaria e un piccolo errore di lettura. Il c<sub>v</sub> "vero" è nascosto: ricavalo con le costruzioni di Casagrande e di Taylor e confronta i risultati.</p>
   <div class="ctl">
     <div class="f"><label for="eT1">Casagrande: tempo t<sub>1</sub> per d<sub>0</sub> <output id="eT1o"></output></label><input type="range" id="eT1" min="0" max="1" step="0.005" value="0.12"></div>
-    <div class="f"><label for="eTail">Casagrande: punti del tratto secondario <output id="eTailo"></output></label><input type="range" id="eTail" min="3" max="9" step="1" value="5"></div>
+    <div class="f"><label for="eTail">Casagrande: punti del tratto secondario <output id="eTailo"></output></label><input type="range" id="eTail" min="3" max="12" step="1" value="5"></div>
     <div class="f"><label for="eTay">Taylor: retta iniziale fino al punto n. <output id="eTayo"></output></label><input type="range" id="eTay" min="3" max="18" step="1" value="8"></div>
     <div class="f" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap"><button class="btn" id="eNew" type="button">Nuovo provino</button><label class="chk"><input type="checkbox" id="eShow"> Mostra c<sub>v</sub> vero</label></div>
   </div>
@@ -218,7 +218,7 @@ sub,sup{line-height:0}
     <b class="mono">Da provare</b>
     <ul>
       <li>Sposta t<sub>1</sub> oltre il tratto parabolico (U &gt; 60% circa): la stima di d<sub>0</sub> si guasta e con lei c<sub>v</sub>.</li>
-      <li>Riduci i punti del tratto secondario fino a includere letture ancora in consolidazione primaria: d<sub>100</sub> scende e t<sub>50</sub> cresce.</li>
+      <li>Aumenta i punti del tratto secondario fino a includere letture ancora in consolidazione primaria: la retta finale diventa più ripida, d<sub>100</sub> risulta più piccolo, t<sub>50</sub> si accorcia e c<sub>v</sub> viene sovrastimato. L'effetto è evidente nei provini lenti, con t<sub>90</sub> di un'ora o più.</li>
       <li>Estendi troppo la retta di Taylor: la pendenza si riduce e t<sub>90</sub> risulta sovrastimato.</li>
       <li>Genera più provini: i due metodi danno quasi sempre valori un po' diversi, ed è normale.</li>
     </ul>
@@ -546,7 +546,7 @@ function drawE(){
    X.strokeStyle=alpha(T.ochre,.9);X.lineWidth=1.5;line(X,[[px(xr[0]),py(cas.tg.a+cas.tg.b*xr[0])],[px(xr[1]),py(cas.tg.a+cas.tg.b*xr[1])]]);
    line(X,[[px(xr[0]),py(cas.tl.a+cas.tl.b*xr[0])],[px(xr[1]),py(cas.tl.a+cas.tl.b*xr[1])]]);
    X.strokeStyle=T.muted;X.lineWidth=1;X.setLineDash([4,3]);
-   [[cas.d0,'d0'],[cas.d50,'d50'],[cas.d100,'d100']].forEach(([d,lab])=>{if(!isFinite(d))return;line(X,[[o.l,py(d)],[o.r,py(d)]]);X.fillStyle=T.ink;X.font='11.5px '+MONO;X.textAlign='right';X.textBaseline='bottom';X.fillText(lab,o.r-4,py(d)-2);});
+   [[cas.d0,'d0'],[cas.d50,'d50'],[cas.d100,'d100']].forEach(([d,lab])=>{if(!isFinite(d))return;line(X,[[o.l,py(d)],[o.r,py(d)]]);X.fillStyle=T.ink;X.font='11.5px '+MONO;X.textAlign='right';const yl=py(d);if(yl-14<o.t){X.textBaseline='top';X.fillText(lab,o.r-4,yl+2);}else{X.textBaseline='bottom';X.fillText(lab,o.r-4,yl-2);}});
    if(isFinite(cas.t50)){const x=px(Math.log10(cas.t50));line(X,[[x,py(cas.d50)],[x,o.b]]);}
    X.setLineDash([]);
    X.strokeStyle=T.water;X.lineWidth=1.6;line(X,D.map(([t,d])=>[px(Math.log10(t)),py(d)]));
@@ -567,7 +567,7 @@ function drawE(){
    X.strokeStyle=T.ochre;X.lineWidth=1.6;line(X,[[px(0),py(tay.ln.a)],[px(xmax),py(tay.ln.a+tay.ln.b*xmax)]]);
    X.setLineDash([6,4]);line(X,[[px(0),py(tay.ln.a)],[px(xmax),py(tay.ln.a+tay.b2*xmax)]]);X.setLineDash([]);
    X.strokeStyle=T.muted;X.lineWidth=1;X.setLineDash([4,3]);
-   if(isFinite(tay.x90)){line(X,[[px(tay.x90),py(tay.d90)],[px(tay.x90),o.b]]);[[tay.ln.a,'d0'],[tay.d90,'d90'],[tay.d100,'d100']].forEach(([d,lab])=>{line(X,[[o.l,py(d)],[o.r,py(d)]]);X.fillStyle=T.ink;X.font='11.5px '+MONO;X.textAlign='right';X.textBaseline='bottom';X.fillText(lab,o.r-4,py(d)-2);});}
+   if(isFinite(tay.x90)){line(X,[[px(tay.x90),py(tay.d90)],[px(tay.x90),o.b]]);[[tay.ln.a,'d0'],[tay.d90,'d90'],[tay.d100,'d100']].forEach(([d,lab])=>{line(X,[[o.l,py(d)],[o.r,py(d)]]);X.fillStyle=T.ink;X.font='11.5px '+MONO;X.textAlign='right';const yl=py(d);if(yl-14<o.t){X.textBaseline='top';X.fillText(lab,o.r-4,yl+2);}else{X.textBaseline='bottom';X.fillText(lab,o.r-4,yl-2);}});}
    X.setLineDash([]);
    X.strokeStyle=T.water;X.lineWidth=1.6;line(X,D.map(([t,d])=>[px(Math.sqrt(t)),py(d)]));
    X.fillStyle=T.water;D.forEach(([t,d])=>{X.beginPath();X.arc(px(Math.sqrt(t)),py(d),2.8,0,7);X.fill();});
