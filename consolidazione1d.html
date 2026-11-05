@@ -95,7 +95,7 @@ figcaption{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.45}
 .chk input{accent-color:var(--water)}
 .wide{margin:0;max-width:none}
 .card.dense{gap:12px;padding-top:18px;padding-bottom:18px}
-.card.dense .try ul,#edometro .try ul{max-width:none}
+.card.dense .try ul,#edometro .try ul,#fd .try ul{max-width:none}
 .ctl.tight{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:4px 22px}
 .ctl.tight .f.full{grid-column:1/-1}
 @media (min-width:1100px){.ctl.tight{grid-template-columns:repeat(6,minmax(0,1fr))}.mets.tight{grid-template-columns:repeat(8,minmax(0,1fr))}}
@@ -228,7 +228,7 @@ sub,sup{line-height:0}
 <!-- 3 · Differenze finite -->
 <section class="card" id="fd">
   <h2><span class="n">3</span>Carico graduale e terreno stratificato</h2>
-  <p class="prose" style="margin:0">Quando il carico cresce nel tempo (un rilevato costruito in mesi) o lo strato è formato da terreni con k e m<sub>v</sub> diversi, la soluzione in serie non basta più. Qui l'equazione m<sub>v</sub>·∂u/∂t = ∂/∂z(k/γ<sub>w</sub>·∂u/∂z) + m<sub>v</sub>·∂σ/∂t è risolta con le differenze finite (Eulero implicito, 120 intervalli). La curva tratteggiata mostra lo stesso terreno caricato istantaneamente.</p>
+  <p class="prose" style="margin:0">Quando il carico cresce nel tempo (un rilevato costruito in mesi) o lo strato è formato da terreni con k e m<sub>v</sub> diversi, la soluzione in serie non basta più. Qui l'equazione m<sub>v</sub>·∂u/∂t = ∂/∂z(k/γ<sub>w</sub>·∂u/∂z) + m<sub>v</sub>·∂σ/∂t è risolta con le differenze finite. La curva tratteggiata mostra lo stesso terreno caricato istantaneamente.</p>
   <div class="ctl">
     <div class="f"><label for="fD">Spessore totale D <output id="fDo"></output></label><input type="range" id="fD" min="2" max="20" step="0.5" value="8"></div>
     <div class="f"><label for="fH1">Spessore dello strato superiore <output id="fH1o"></output></label><input type="range" id="fH1" min="0" max="1" step="0.025" value="0.375"></div>
@@ -241,11 +241,15 @@ sub,sup{line-height:0}
     <div class="f"><label for="fDr">Drenaggio</label><select id="fDr"><option value="tb">Doppio (sopra e sotto)</option><option value="t">Solo in superficie (base impermeabile)</option><option value="b">Solo alla base (superficie impermeabile)</option></select></div>
     <div class="f" style="grid-column:1/-1"><label for="fT">Tempo dall'inizio della costruzione <output id="fTo"></output></label><div class="trow"><input type="range" id="fT" min="0" max="4.5626" step="0.002" value="2.4"><button class="btn" id="fPlay" type="button"></button></div></div>
   </div>
-  <div class="mets">
-    <div class="met"><span>c<sub>v1</sub> / c<sub>v2</sub></span><b id="nCv"></b></div>
+  <div class="mets tight">
+    <div class="met"><span>c<sub>v1</sub> strato superiore</span><b id="nCv1"></b></div>
+    <div class="met"><span>c<sub>v2</sub> strato inferiore</span><b id="nCv2"></b></div>
     <div class="met"><span>Carico applicato σ(t)</span><b id="nSig"></b></div>
-    <div class="met"><span>Cedimento s(t) / s<sub>∞</sub></span><b id="nS"></b></div>
-    <div class="met"><span>t<sub>90</sub> graduale / istantaneo</span><b id="nT9"></b></div>
+    <div class="met"><span>Carico finale Δσ</span><b id="nSig2"></b></div>
+    <div class="met"><span>Cedimento s(t)</span><b id="nS"></b></div>
+    <div class="met"><span>Cedimento finale s<sub>∞</sub></span><b id="nS2"></b></div>
+    <div class="met"><span>t<sub>90</sub> carico graduale</span><b id="nT9"></b></div>
+    <div class="met"><span>t<sub>90</sub> carico istantaneo</span><b id="nT92"></b></div>
   </div>
   <div class="viz2">
     <figure>
@@ -646,9 +650,10 @@ function drawF(){
   $('fTco').textContent=F.tcM===0?'istantaneo':F.tcM+(F.tcM===1?' mese':' mesi');$('fTo').textContent=fT(F.days);
   const u=profAt(FR,F.tl),sNow=valAt(FR.s,F.tl),sigNow=valAt(FR.sig,F.tl),dz=FR.dz;
   const uz=z=>{const x=clamp(z/dz,0,FN),i=Math.min(FN-1,Math.floor(x)),f=x-i;return u[i]+(u[i+1]-u[i])*f;};
-  $('nCv').textContent=fp(F.k1/(F.mv1*GW)*YR,2)+' / '+fp(F.k2/(F.mv2*GW)*YR,2)+' m²/anno';
-  $('nSig').textContent=fx(sigNow,0)+' / '+F.ds+' kPa';$('nS').textContent=fx(sNow*100,1)+' / '+fx(FR.sinf*100,1)+' cm';
-  $('nT9').textContent=fT(t90of(FR))+' / '+fT(t90of(FI));
+  $('nCv1').textContent=fp(F.k1/(F.mv1*GW)*YR,2)+' m²/anno';$('nCv2').textContent=fp(F.k2/(F.mv2*GW)*YR,2)+' m²/anno';
+  $('nSig').textContent=fx(sigNow,0)+' kPa';$('nSig2').textContent=F.ds+' kPa';
+  $('nS').textContent=fx(sNow*100,1)+' cm';$('nS2').textContent=fx(FR.sinf*100,1)+' cm';
+  $('nT9').textContent=fT(t90of(FR));$('nT92').textContent=fT(t90of(FI));
   const vmF=drawColumn($('fCol'),{D:F.D,uAt:z=>uz(z)/F.ds,vAt:z=>{const i=clamp(Math.floor(z/dz),0,FN-1);return -FR.K[i]*(u[i+1]-u[i])/dz;},top:FR.topD,bot:FR.botD,iface:[F.h1],base:z=>z<F.h1?T.sand:T.clay,load:'σ(t) = '+fx(sigNow,0)+' kPa'});
   $('fBal').innerHTML='Velocità massima v = '+fp(vmF*DAY*1000,3)+' mm/g';
   /* isocrone */
