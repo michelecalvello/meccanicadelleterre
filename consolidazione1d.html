@@ -228,7 +228,7 @@ sub,sup{line-height:0}
 <!-- 3 · Differenze finite -->
 <section class="card" id="fd">
   <h2><span class="n">3</span>Carico graduale e terreno stratificato</h2>
-  <p class="prose" style="margin:0">Quando il carico cresce nel tempo (un rilevato costruito in mesi) o lo strato è formato da terreni con k e m<sub>v</sub> diversi, la soluzione in serie non basta più. Qui l'equazione m<sub>v</sub>·∂u/∂t = ∂/∂z(k/γ<sub>w</sub>·∂u/∂z) + m<sub>v</sub>·∂σ/∂t è risolta con le differenze finite. La curva tratteggiata mostra lo stesso terreno caricato istantaneamente.</p>
+  <p class="wide">Quando il carico cresce nel tempo (un rilevato costruito in mesi) o lo strato è formato da terreni con k e m<sub>v</sub> diversi, la soluzione in serie non basta più. Qui l'equazione m<sub>v</sub>·∂u/∂t = ∂/∂z(k/γ<sub>w</sub>·∂u/∂z) + m<sub>v</sub>·∂σ/∂t è risolta con le differenze finite. La curva tratteggiata mostra lo stesso terreno caricato istantaneamente.</p>
   <div class="ctl">
     <div class="f"><label for="fD">Spessore totale D <output id="fDo"></output></label><input type="range" id="fD" min="2" max="20" step="0.5" value="8"></div>
     <div class="f"><label for="fH1">Spessore dello strato superiore <output id="fH1o"></output></label><input type="range" id="fH1" min="0" max="1" step="0.025" value="0.375"></div>
@@ -255,7 +255,6 @@ sub,sup{line-height:0}
     <figure>
       <canvas id="fCol" style="height:360px" role="img" aria-label="Colonna stratificata con sovrapressioni e flusso"></canvas>
       <figcaption>Strato superiore (chiaro) e inferiore (scuro) separati dalla linea tratteggiata. Striscia puntinata: contorno drenante.</figcaption>
-      <div class="balance" id="fBal"></div>
     </figure>
     <figure>
       <canvas id="fIso" style="height:360px" role="img" aria-label="Isocrone calcolate alle differenze finite"></canvas>
@@ -646,16 +645,15 @@ function valAt(arr,tl){const x=tl/TMAX*(NO-1),j=clamp(Math.floor(x),0,NO-2),f=cl
 function drawF(){
   readF();
   $('fDo').textContent=fx(F.D,1)+' m';$('fH1o').textContent=fx(F.h1,2)+' m';$('fK1o').innerHTML=sci(F.k1)+' m/s';$('fK2o').innerHTML=sci(F.k2)+' m/s';
-  $('fMv1o').innerHTML=fp(F.mv1*1000,3)+' MPa<sup>−1</sup>';$('fMv2o').innerHTML=fp(F.mv2*1000,3)+' MPa<sup>−1</sup>';$('fSo').textContent=F.ds+' kPa';
+  $('fMv1o').innerHTML=fx(F.mv1*1000,2)+' MPa<sup>−1</sup>';$('fMv2o').innerHTML=fx(F.mv2*1000,2)+' MPa<sup>−1</sup>';$('fSo').textContent=F.ds+' kPa';
   $('fTco').textContent=F.tcM===0?'istantaneo':F.tcM+(F.tcM===1?' mese':' mesi');$('fTo').textContent=fT(F.days);
   const u=profAt(FR,F.tl),sNow=valAt(FR.s,F.tl),sigNow=valAt(FR.sig,F.tl),dz=FR.dz;
   const uz=z=>{const x=clamp(z/dz,0,FN),i=Math.min(FN-1,Math.floor(x)),f=x-i;return u[i]+(u[i+1]-u[i])*f;};
-  $('nCv1').textContent=fp(F.k1/(F.mv1*GW)*YR,2)+' m²/anno';$('nCv2').textContent=fp(F.k2/(F.mv2*GW)*YR,2)+' m²/anno';
+  $('nCv1').innerHTML=sci(F.k1/(F.mv1*GW),2)+' m²/s';$('nCv2').innerHTML=sci(F.k2/(F.mv2*GW),2)+' m²/s';
   $('nSig').textContent=fx(sigNow,0)+' kPa';$('nSig2').textContent=F.ds+' kPa';
   $('nS').textContent=fx(sNow*100,1)+' cm';$('nS2').textContent=fx(FR.sinf*100,1)+' cm';
   $('nT9').textContent=fT(t90of(FR));$('nT92').textContent=fT(t90of(FI));
-  const vmF=drawColumn($('fCol'),{D:F.D,uAt:z=>uz(z)/F.ds,vAt:z=>{const i=clamp(Math.floor(z/dz),0,FN-1);return -FR.K[i]*(u[i+1]-u[i])/dz;},top:FR.topD,bot:FR.botD,iface:[F.h1],base:z=>z<F.h1?T.sand:T.clay,load:'σ(t) = '+fx(sigNow,0)+' kPa'});
-  $('fBal').innerHTML='Velocità massima v = '+fp(vmF*DAY*1000,3)+' mm/g';
+  drawColumn($('fCol'),{D:F.D,uAt:z=>uz(z)/F.ds,vAt:z=>{const i=clamp(Math.floor(z/dz),0,FN-1);return -FR.K[i]*(u[i+1]-u[i])/dz;},top:FR.topD,bot:FR.botD,iface:[F.h1],base:z=>z<F.h1?T.sand:T.clay,load:'σ(t) = '+fx(sigNow,0)+' kPa'});
   /* isocrone */
   {const c=$('fIso');const [X,w,h]=prep(c);const o={l:46,r:w-10,t:12,b:h-40,H:h,xr:[0,F.ds],yr:[0,F.D],xt:ticksN(0,F.ds,4),yt:ticksN(0,F.D,5),xl:'u (kPa)',yl:'z (m)'};const {px,py}=frame(X,o);
    clip(X,o);const zs=[...Array(FN+1)].map((_,i)=>i*dz);
